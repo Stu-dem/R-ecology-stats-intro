@@ -1,0 +1,361 @@
+---
+title: "Let's wrangle some data!"
+author: "Stuart Demmer"
+date: "29 July 2018"
+output: html_document
+---
+
+```{r setup, message = FALSE, echo = FALSE}
+library(nycflights13)
+library(tidyverse)
+```
+
+#Come again?
+Data wrangling might sound stragen but we've all done it - it's just the term the guys who made the `dplyr` package use to refer to data import, transformation, and manipulation. There are methods contained within `base R` which can perform much of what we will learn here but `dplyr`'s usability and extensive capabilities are vastly superior. The basic aim here is to learn how to manage data outside of Excel. Excel is great for small jobs but handling large data sets with several filters can be tedious and error prone. coding commands as oppose to manually selecting and copying cell ranges is much more reliable and efficient.
+Before we start we need to tell `R` to install the `dplyr` package because we haven't got it yet. We can install `dplyr` individually or we can install a collection of packages which `dplyr` forms a part of. Let's opt for the latter. This group of packages is called the [`tidyverse`](https://www.tidyverse.org/). This collection of packages can help you with loads of tasks and they all follow a similar manner of coding and can be used interchangably. Let's install the `tidyverse` and another package containing some interesting data now:
+```
+install.packages("tidyverse")
+install.packages("nycflights13")
+```
+Your computer will connect to the internet and access the packages' install files and install them to your computer automatically. Once installed we need to load the packages into our current `R` session. We will only need to install packages once but each time we restart `R` we will need to load the packages from the `library` as follows:
+```
+library(tidyverse)
+library(nycflights12)
+```
+There you go! All set. Right - now this collection of packages prefers to use something called a `tibble` as opposed to a `data.frame`. A quick way to see the difference this makes is by trying it out. Try typing `as.data.frame(nycflights13::flights)` and then `nycflights13::flights` into the `R` console. Pretty crazy right? If it had the space `as.data.frame()` would have printed all 336 776 rows of this table! A nightmare. `tibble` objects display useful outputs when called. But suppose we did want to scroll through all those rows - we can use `View(nycflights13::flights)` (note that **V** is capitalised). Ther are a couple of other interesting differences between `tibble` and `data.frame` but they aren't important to us right now.
+Now that we have some big data let's tinker with it. First let's have a closer look at what this nycflights13::flights is all about. Basically `nycflights13` is a `package` that contains data about flights departing from New York in 2013. `flights` then is the `tibble` containing the data about each flight that left. Type `?flights` for a more detailed description if you like.
+You might  have noticed the row of three (or four) letter abbreviations under the column names. These describe the type of each variable:
+
+* `int` stands for integers.  
+* `dbl` stands for doubles, or real numbers.  
+* `chr` stands for character vectors, or strings.  
+* `dttm` stands for date-times (a date + a time).
+
+There are three other common types of variables that aren’t used in this dataset but you’ll encounter later in the book:
+
+* `lgl` stands for logical, vectors that contain only TRUE or FALSE.  
+* `fctr` stands for factors, which R uses to represent categorical variables with fixed possible values.  
+* `date` stands for dates.
+
+Now we're ready to go. `dplyr` has five main functions we can use to carry out most of our data exploration, transformation, and summary:
+
+* Pick observations by their values (`filter()`).  
+* Reorder the rows (`arrange()`).  
+* Pick variables by their names (`select()`).  
+* Create new variables with functions of existing variables (`mutate()`).  
+* Collapse many values down to a single summary (`summarise()`).
+
+And each of these functions can be used under `group_by()` which combines unique combinations of selected columns.  The above functions are then applied to those groups. As each of these functions carry out 'activities' we can call them 'verbs'. They all work in the same way:
+```
+data.frame <- verb(data.frame, ... what to do with data.frame)
+```
+## The verbs
+### Filtering with `filter()`
+`filter()` allows you to pull out rows or observations based on requested values. The first arguement is the data.frame we want to filter observations from ad the subsequent arguments are our filtering criteria. Using `flights` we can look for all the flights that left New York on the 25th of March with:
+```{r}
+filter(flights, month == 3, day == 25)
+```
+
+What this has done is printed out the result of that filtering request but we haven't saved any of that data, only called and printed it. To save it we could do:
+```{r}
+mar25 <- filter(flights, month == 3, day == 25)
+View(mar25)
+```
+
+Notice this `==` rather than just `=`. We need to do this becuase `=` is very similar to `<-` - they both assign alues to argument variables or objects. `==` is one of the logical comparrison operators. The others include:
+
+* `>` less than  
+* `>=` less than or equal to  
+* `<` greater than  
+* `<=` greater than or equal to  
+* `!=` not equal to  
+* `&` and  
+* `|` or  
+We can use these last two operators to join several logical comparrisons together. For istance: 
+```{r}
+filter(flights, month == 11 | month == 12)
+```
+
+returns all flights which departed in either November or December 2013. 
+```{r}
+filter(flights, month == 11 & month == 12)
+```
+
+The above query, however, produces nothing because a single flight cannot depart in two months. Sometimes you might import data which contains `NA` ("not applicable") or `NAN` ("not a number") values. These will almost always through out your analyses and so dealing with them from the start is incredibly important. The best way to handle these data is to remove them from the data set. You can do this with `is.na()`:
+```{r}
+filter(flights, !is.na(dep_time ))
+```
+
+This code filters all records where the `dep_time` is _not_ _`NA`_ With all that i think you are ready for a quick exercise:
+
+#### Quiz time
+>1. Find all flights that  
+  1.1 Had an arrival delay of two or more hours  
+>  
+  1.2 Flew to Houston (`IAH` or `HOU` are Houston's two airport codes) 
+>  
+  1.3 Were operated by United, American, or Delta airlines  
+>  
+  1.4 Departed in summer (July, August, and September for Northern Hemisphere countries)  
+>  
+  1.5 Arrived more than two hours late, but did not depart late  
+>  
+  1.6 Were delayed by at least one hour, but made up over 30 minutes in flight  
+>  
+  1.7 Departed between midnight (00:00) and 06:00
+>  
+  <details>
+      <summary>Answer</summary>
+        1.1 `filter(flights, arr_delay > 120)`  
+>        
+        1.2 `filter(flights, dest == "IAH" | dest == "HOU"`  
+>       
+        1.3 `filter(flights, carrier == "UA" | carrier == "AA" | carrier == "DL"`  
+>        
+        1.4 `filter(flights, month == 6 | month == 7 | month == 8` <br> or alternatively `filter(flights, month <5 & month > 9`  
+>        
+        1.5 `filter(flights, dep_delay < 1 & arr_delay > 120`  
+>        
+        1.6 `filter(flights, dep_delay > 60 & arr_delay < 30)`  
+>        
+        1.7 `filter(flights, dep_time > 0 & dep_time < 360`  
+>        
+    </details>
+>2. What does `between()` do?
+<details>
+      <summary>Answer</summary>
+        This is a shortcut for x >= left & x <= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables.
+    </details>
+>3. Select all flights which have a missing `dep_time`. Are there any other variables with missing data? What might these rows represent?
+<details>
+      <summary>Answer</summary>
+        `filter(flights, is.na(dep_time)`
+    </details>
+
+### Arranging with `arrange()`
+The general principles here are very similar to `filter()` except that insted of returning selected rows which meet the `filter()` conditions, all rows are returned but their order is shuffled around. When using more than one column to order by each additional column will be subsetted within the previous. For example:
+```{r}
+options(tibble.print_max = 30)
+print(arrange(flights, year, month, day, dep_time), n = 20)
+```
+
+Here the flights are ordered by year (only 2013), month (only January shows on this output), then within January we can see day 1 and then within day 1 we see the earliest flight (this was at 05:17) and so on. You could do the opposite and order the rows in decending order using `desc()` to tell `arrange()` to produce the oposite:
+```{r}
+print(arrange(flights, desc(year), desc(month), desc(day), desc(dep_time)), n = 20)
+```
+
+If you are looking for any _`NA`_ values you will find them at the bottom of your table. `arrange()` doesn't know what these are so it can't sort them into any particular order...
+
+#### Quiz time  
+>1. How could you use `arrange()` to sort all missing values within `flights` to the start? (`is.na()` will be useful)
+  <details>
+  <summary>Answer</summary>
+    `arrange(flights, !is.na(dep_time))` or `arrange(flights, desc(is.na(dep_time)))`
+  </details>  
+>2. Sort `flights` to find the most delayed flights.
+  <details>
+  <summary>Answer</summary>
+    `arrange(flights, desc(dep_delay))`
+  </details>  
+>3. Sort `flights` to find the fastest flights.
+  <details>
+  <summary>Answer</summary>
+    `arrange(flights, distance/air_time)`
+  </details>  
+>4. Order by which flights flew the greatest distance.
+  <details>
+  <summary>Answer</summary>
+    `arrange(flights, distance)`
+  </details>  
+
+### Selectively selecting columns with `select()`
+We might not always have a use for this function but we will go over it quickly. Suppose you have a `data.frame` with only a few columns that you want out of the whole thing - like this `flights` data set. Perhaps we are only interested in which airline had the greatest delays. We could narrow our `data.frame` down by calling:
+```{r}
+select(flights, dep_delay, arr_delay, carrier)
+## by ordering our columns we can quickly reorder our new data.frame:
+select(flights, carrier, dep_delay, arr_delay)
+## some other useful functions of select():
+select(flights, year:dep_time) ## selects all columns between and including the requested
+select(flights, -(carrier:time_hour)) ## returns all but those mentioned in the query
+```
+
+What I have found is `select()`'s most useful function is its simple renaming ability:
+```{r}
+select(flights, tail.num = tailnum) ## returns the selected column (tail_num) and gives it a new name (tail.num). This is great but only returns the selected columns. rename() is a function that returns all columns and applies the requested renaming:
+rename(flights, tail.num = tailnum)
+```
+
+One more useful function combination is `select(... , everything())` which brings selected columns to the beginning of the `data.frame` and then places everthing else subsequent to those:
+```{r}
+select(flights, time_hour, air_time, everything()) 
+```
+
+#### Quiz time  
+>1. Think of as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay` from `flights`.  
+>2. What happens if you include the name of a variable multiple times in a `select()` call?  
+>3. What does the `one_of()` function do in combination with `select()`? How could you use it with `vars <- c("year", "month", "day", "dep_delay", "arr_delay")`?
+
+>4. Does the result of running `select(flights, contains("TIME"))` surprise you? How do the select helpers deal with case by default? How can you change that default?  
+  <details>
+  <summary>Answer</summary>
+    HINT: have a look at the arguments that `contains()` (and other `select_helpers` type functions) can select.
+  </details>  
+
+### Mutating isn't just for genetics
+`mutate()` is a pretty neat funcion that can really speed up generating new variables from columns already present in your `data.frame`. It works in a similar way to everything else we've used so far. The basic call is `mutate(data.frame, new.column.name = column.3 * column.5)`. The new column always gets attached to your `data.frame` at the end so it is sometimes useful to select relavant columns first and then mutate those:
+```{r}
+flights.sml <- select(flights, 
+                      year:day, 
+                      ends_with("delay"), 
+                      distance, air_time)
+mutate(flights.sml, 
+       gain = dep_delay - arr_delay, 
+       speed = distance / air_time * 60)
+##Note how I have reformatted these commands - that makes it much easier to see the individual arguments of each function.
+```
+
+And you can even refer to columns that you have just made within the same `mutate()` call:
+```{r, echo = 5:8}
+flights.sml <- select(flights, 
+                      year:day, 
+                      ends_with("delay"), 
+                      distance, air_time)
+mutate(flights.sml, 
+       gain = dep_delay - arr_delay, 
+       hours = air_time / 60, 
+       gain_per_hour = gain / hours)
+```
+
+And then suppose only the new variables that you have made are useful to you then `transmute()` is what you are looking for:
+```{r}
+transmute(flights,
+            gain = dep_delay - arr_delay, 
+            hours = air_time / 60, 
+            gain_per_hour = gain / hours)
+```
+
+You can use all sorts of functions together with mutate to create new variables quickly, efficiently, and most importantly, without ever needing Excel again! To quickly calculate the proportion of something you could do `something / sum (something)` for instance. Or to find the differece from the mean you could do:
+```{r}
+mutate(flights, mean.diff.arr_delay = arr_delay - mean(arr_delay))
+```
+
+There are plenty of other specifically designed funcitons for `mutate()` for generating cumulative frequencies, ranked data, log transformations and even somthing called [modular arithmatic](https://en.wikipedia.org/wiki/Modular_arithmetic)! We will skip the quiz for this verb but i encourage you to read the [documentation on `mutate()`](https://dplyr.tidyverse.org/reference/mutate.html).
+
+### Summaries made easy with `summarise()`!
+This is the last main `dplyr` function we will look at in this workshop. At first you might think it's pretty lame:
+```{r}
+summarise(flights, delay = mean(dep_delay, na.rm = TRUE)) ## na.rm is a boolean argument addressing what to do with, well, NA's. rm() is a base R function which removes any object from your environment.
+```
+
+But wait until you use it with `group_by()`. This function creates new mini datasets within your `data.frame` which `summarise` then acts on:
+```{r}
+by.day <- group_by(flights, year, month, day)
+summarise(by.day, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+This is a great way to create a quic ksummary view of your dataset based on treatments (for each day of the year in this case). But there is something a little tedious about the way we have been writing our code here which might only be becoming apparant now. Every time we use a `dplyr` function we have to tell it what `data.frame` to look at. But how often will we look for data between `data.frame`s? Very unlikely. The annoying thing is that each time we want to use a new function we need to create a new `data.frame` and so we are stuck typing the name out every time. Even for small summaries this is a headache. That's where this amazing new idea comes into the picture. Meet the pipe: `%>%`
+
+#### Piping 101
+Suppose we wanted to delve a little deeper into the relationship between the distance and average delay for each location:
+```{r, echo = 1:7}
+by_dest <- group_by(flights, dest)
+delay <- summarise(by_dest,
+  count = n(),
+  dist = mean(distance, na.rm = TRUE),
+  delay = mean(arr_delay, na.rm = TRUE)
+)
+delay <- filter(delay, count > 20, dest != "HNL")
+
+# It looks like delays increase with distance up to ~750 miles 
+# and then decrease. Maybe as flights get longer there's more 
+# ability to make up delays in the air?
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+#> `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+```
+
+There are three broad steps to getting our data into this form:
+1. Group flights by destination and save these as `by_dest`.
+2. Summarise the distance, average delay, and number of flights and save this as `delay`.
+3. Overwrite `delay` by filtering out the noisy points (the outliers)
+What we are left with are a bunch of unused `data.frame`s which we aren't really interested in. We end up spending time naming arbitrary objects which wastes our time and clutters up our environment. But luckily there are some pretty smart people who also don't like doing this and so they developed the pipe, `%>%`. We can do the same operation as:
+```{r, echo = 1:8}
+delays <- flights %>% 
+  group_by(dest) %>% 
+  summarise(
+    count = n(), 
+    dist = mean(distance, na.rm = TRUE), 
+    delay = mean(arr_delay, na.rm = TRUE)
+  ) %>%
+  filter(count > 20, dest != "HNL")
+
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+```
+
+Writing our code like this keeps our focus on what's important, the data transformations themselves rather than what variable is being transformed. The important difference to note is that we start with the biggest object and then whittle it down into something smaller. We also don't need to refer to where the data are coming from within each function anymore because the `%>%` tells the new function to look at the result of the previous function to know what to use.
+
+#### Counts
+An important part of any summary is knowing how many observations the summary is based on. Is this mean value the result of 3 or 300 observations (the latter is probably more reliable I suspect). Let's see this in practice by checking which individual planes (referenced by their tail number) have the longest average delay:
+```{r}
+## just some sorting out here. I am getting all the flights that were not cancelled (cancelled flights are those which have NA values):
+not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+## quickly summarise these to get the average depature delay:
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+
+delays <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(
+    delay = mean(arr_delay)
+  )
+
+ggplot(data = delays, mapping = aes(x = delay)) + 
+  geom_density()
+```
+
+This looks like planes from South Africa, some planes have average delays of five hours (300 minutes)! But this seems like a bit extreme. If we incorporate the number of flights vs. average delay we could get a somewhat clearer picture:
+```{r}
+delays <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(data = delays, mapping = aes(x = n, y = delay)) + 
+  geom_point(alpha = 1/10)
+```
+
+It isn't really surprising that the fewer the total number of flights the greater the variation in the average delay. Generally the variation seems to decrease as the sample size increases. To get around all this noise and to get to the real trends it is helpful to filter out the mean points which have fewer points:
+```{r, echo = 7:10}
+delays <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n()
+  )
+delays %>% 
+  filter(n > 25) %>% 
+  ggplot(mapping = aes(x = n, y = delay)) + 
+    geom_point(alpha = 1/10)
+## we will be getting to understanding the plotting code in a moment!
+```
+
+#### Other useful summary functions
+Mean, counts and summaries can be useful to include but we can produce summaries of so many more things and print them out in our same table:
+```{r}
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    avg_delay = mean(arr_delay),
+    med_delay = median(arr_delay), 
+    sd_delay = sd(arr_delay)
+  )
+```
+
+I have just attempted to summarise a massive chapter on summarising into what I think would be useful for us to know as biologists. But to make sure you are getting it and are fluent with data transfomation and data wrangling I would really encourage you to check out [this chapter](http://r4ds.had.co.nz/transform.html) online.

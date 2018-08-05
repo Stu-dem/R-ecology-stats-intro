@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Stuart Demmer" />
+
+<meta name="date" content="2018-07-29" />
+
+<title>Let’s wrangle some data!</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Introduction.html">Intro</a>
+</li>
+<li>
+  <a href="Baby_steps.html">Baby steps</a>
+</li>
+<li>
+  <a href="Data_wrangling.html">Data wrangling</a>
+</li>
+<li>
+  <a href="Data_visualisation.html">Data vis</a>
+</li>
+<li>
+  <a href="Statistics_intro.html">Stats intro</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Let’s wrangle some data!</h1>
+<h4 class="author"><em>Stuart Demmer</em></h4>
+<h4 class="date"><em>29 July 2018</em></h4>
+
+</div>
+
+
+<div id="come-again" class="section level1">
+<h1>Come again?</h1>
+<p>Data wrangling might sound stragen but we’ve all done it - it’s just the term the guys who made the <code>dplyr</code> package use to refer to data import, transformation, and manipulation. There are methods contained within <code>base R</code> which can perform much of what we will learn here but <code>dplyr</code>’s usability and extensive capabilities are vastly superior. The basic aim here is to learn how to manage data outside of Excel. Excel is great for small jobs but handling large data sets with several filters can be tedious and error prone. coding commands as oppose to manually selecting and copying cell ranges is much more reliable and efficient. Before we start we need to tell <code>R</code> to install the <code>dplyr</code> package because we haven’t got it yet. We can install <code>dplyr</code> individually or we can install a collection of packages which <code>dplyr</code> forms a part of. Let’s opt for the latter. This group of packages is called the <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>. This collection of packages can help you with loads of tasks and they all follow a similar manner of coding and can be used interchangably. Let’s install the <code>tidyverse</code> and another package containing some interesting data now:</p>
+<pre><code>install.packages(&quot;tidyverse&quot;)
+install.packages(&quot;nycflights13&quot;)</code></pre>
+<p>Your computer will connect to the internet and access the packages’ install files and install them to your computer automatically. Once installed we need to load the packages into our current <code>R</code> session. We will only need to install packages once but each time we restart <code>R</code> we will need to load the packages from the <code>library</code> as follows:</p>
+<pre><code>library(tidyverse)
+library(nycflights12)</code></pre>
+<p>There you go! All set. Right - now this collection of packages prefers to use something called a <code>tibble</code> as opposed to a <code>data.frame</code>. A quick way to see the difference this makes is by trying it out. Try typing <code>as.data.frame(nycflights13::flights)</code> and then <code>nycflights13::flights</code> into the <code>R</code> console. Pretty crazy right? If it had the space <code>as.data.frame()</code> would have printed all 336 776 rows of this table! A nightmare. <code>tibble</code> objects display useful outputs when called. But suppose we did want to scroll through all those rows - we can use <code>View(nycflights13::flights)</code> (note that <strong>V</strong> is capitalised). Ther are a couple of other interesting differences between <code>tibble</code> and <code>data.frame</code> but they aren’t important to us right now. Now that we have some big data let’s tinker with it. First let’s have a closer look at what this nycflights13::flights is all about. Basically <code>nycflights13</code> is a <code>package</code> that contains data about flights departing from New York in 2013. <code>flights</code> then is the <code>tibble</code> containing the data about each flight that left. Type <code>?flights</code> for a more detailed description if you like. You might have noticed the row of three (or four) letter abbreviations under the column names. These describe the type of each variable:</p>
+<ul>
+<li><code>int</code> stands for integers.<br />
+</li>
+<li><code>dbl</code> stands for doubles, or real numbers.<br />
+</li>
+<li><code>chr</code> stands for character vectors, or strings.<br />
+</li>
+<li><code>dttm</code> stands for date-times (a date + a time).</li>
+</ul>
+<p>There are three other common types of variables that aren’t used in this dataset but you’ll encounter later in the book:</p>
+<ul>
+<li><code>lgl</code> stands for logical, vectors that contain only TRUE or FALSE.<br />
+</li>
+<li><code>fctr</code> stands for factors, which R uses to represent categorical variables with fixed possible values.<br />
+</li>
+<li><code>date</code> stands for dates.</li>
+</ul>
+<p>Now we’re ready to go. <code>dplyr</code> has five main functions we can use to carry out most of our data exploration, transformation, and summary:</p>
+<ul>
+<li>Pick observations by their values (<code>filter()</code>).<br />
+</li>
+<li>Reorder the rows (<code>arrange()</code>).<br />
+</li>
+<li>Pick variables by their names (<code>select()</code>).<br />
+</li>
+<li>Create new variables with functions of existing variables (<code>mutate()</code>).<br />
+</li>
+<li>Collapse many values down to a single summary (<code>summarise()</code>).</li>
+</ul>
+<p>And each of these functions can be used under <code>group_by()</code> which combines unique combinations of selected columns. The above functions are then applied to those groups. As each of these functions carry out ‘activities’ we can call them ‘verbs’. They all work in the same way:</p>
+<pre><code>data.frame &lt;- verb(data.frame, ... what to do with data.frame)</code></pre>
+<div id="the-verbs" class="section level2">
+<h2>The verbs</h2>
+<div id="filtering-with-filter" class="section level3">
+<h3>Filtering with <code>filter()</code></h3>
+<p><code>filter()</code> allows you to pull out rows or observations based on requested values. The first arguement is the data.frame we want to filter observations from ad the subsequent arguments are our filtering criteria. Using <code>flights</code> we can look for all the flights that left New York on the 25th of March with:</p>
+<pre class="r"><code>filter(flights, month == 3, day == 25)</code></pre>
+<pre><code>## # A tibble: 978 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     3    25       13           2359        14      354
+##  2  2013     3    25       27           2005       262      313
+##  3  2013     3    25      457            500        -3      647
+##  4  2013     3    25      511            515        -4      809
+##  5  2013     3    25      534            530         4      814
+##  6  2013     3    25      540            540         0      844
+##  7  2013     3    25      542            545        -3      914
+##  8  2013     3    25      549            600       -11      855
+##  9  2013     3    25      551            600        -9      702
+## 10  2013     3    25      551            600        -9      657
+## # ... with 968 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>What this has done is printed out the result of that filtering request but we haven’t saved any of that data, only called and printed it. To save it we could do:</p>
+<pre class="r"><code>mar25 &lt;- filter(flights, month == 3, day == 25)
+View(mar25)</code></pre>
+<p>Notice this <code>==</code> rather than just <code>=</code>. We need to do this becuase <code>=</code> is very similar to <code>&lt;-</code> - they both assign alues to argument variables or objects. <code>==</code> is one of the logical comparrison operators. The others include:</p>
+<ul>
+<li><code>&gt;</code> less than<br />
+</li>
+<li><code>&gt;=</code> less than or equal to<br />
+</li>
+<li><code>&lt;</code> greater than<br />
+</li>
+<li><code>&lt;=</code> greater than or equal to<br />
+</li>
+<li><code>!=</code> not equal to<br />
+</li>
+<li><code>&amp;</code> and<br />
+</li>
+<li><code>|</code> or<br />
+We can use these last two operators to join several logical comparrisons together. For istance:</li>
+</ul>
+<pre class="r"><code>filter(flights, month == 11 | month == 12)</code></pre>
+<pre><code>## # A tibble: 55,403 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013    11     1        5           2359         6      352
+##  2  2013    11     1       35           2250       105      123
+##  3  2013    11     1      455            500        -5      641
+##  4  2013    11     1      539            545        -6      856
+##  5  2013    11     1      542            545        -3      831
+##  6  2013    11     1      549            600       -11      912
+##  7  2013    11     1      550            600       -10      705
+##  8  2013    11     1      554            600        -6      659
+##  9  2013    11     1      554            600        -6      826
+## 10  2013    11     1      554            600        -6      749
+## # ... with 55,393 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>returns all flights which departed in either November or December 2013.</p>
+<pre class="r"><code>filter(flights, month == 11 &amp; month == 12)</code></pre>
+<pre><code>## # A tibble: 0 x 19
+## # ... with 19 variables: year &lt;int&gt;, month &lt;int&gt;, day &lt;int&gt;,
+## #   dep_time &lt;int&gt;, sched_dep_time &lt;int&gt;, dep_delay &lt;dbl&gt;, arr_time &lt;int&gt;,
+## #   sched_arr_time &lt;int&gt;, arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>The above query, however, produces nothing because a single flight cannot depart in two months. Sometimes you might import data which contains <code>NA</code> (“not applicable”) or <code>NAN</code> (“not a number”) values. These will almost always through out your analyses and so dealing with them from the start is incredibly important. The best way to handle these data is to remove them from the data set. You can do this with <code>is.na()</code>:</p>
+<pre class="r"><code>filter(flights, !is.na(dep_time ))</code></pre>
+<pre><code>## # A tibble: 328,521 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 328,511 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>This code filters all records where the <code>dep_time</code> is <em>not</em> <em><code>NA</code></em> With all that i think you are ready for a quick exercise:</p>
+<div id="quiz-time" class="section level4">
+<h4>Quiz time</h4>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Find all flights that<br />
+1.1 Had an arrival delay of two or more hours</li>
+</ol>
+<p>1.2 Flew to Houston (<code>IAH</code> or <code>HOU</code> are Houston’s two airport codes)</p>
+<p>1.3 Were operated by United, American, or Delta airlines</p>
+<p>1.4 Departed in summer (July, August, and September for Northern Hemisphere countries)</p>
+<p>1.5 Arrived more than two hours late, but did not depart late</p>
+<p>1.6 Were delayed by at least one hour, but made up over 30 minutes in flight</p>
+<p>1.7 Departed between midnight (00:00) and 06:00</p>
+<p><details> <summary>Answer</summary> 1.1 <code>filter(flights, arr_delay &gt; 120)</code></p>
+<p>1.2 <code>filter(flights, dest == &quot;IAH&quot; | dest == &quot;HOU&quot;</code></p>
+<p>1.3 <code>filter(flights, carrier == &quot;UA&quot; | carrier == &quot;AA&quot; | carrier == &quot;DL&quot;</code></p>
+<p>1.4 <code>filter(flights, month == 6 | month == 7 | month == 8</code> <br> or alternatively <code>filter(flights, month &lt;5 &amp; month &gt; 9</code></p>
+<p>1.5 <code>filter(flights, dep_delay &lt; 1 &amp; arr_delay &gt; 120</code></p>
+<p>1.6 <code>filter(flights, dep_delay &gt; 60 &amp; arr_delay &lt; 30)</code></p>
+<p>1.7 <code>filter(flights, dep_time &gt; 0 &amp; dep_time &lt; 360</code></p>
+<p></details> 2. What does <code>between()</code> do? <details> <summary>Answer</summary> This is a shortcut for x &gt;= left &amp; x &lt;= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables. </details> 3. Select all flights which have a missing <code>dep_time</code>. Are there any other variables with missing data? What might these rows represent? <details> <summary>Answer</summary> <code>filter(flights, is.na(dep_time)</code> </details></p>
+</blockquote>
+</div>
+</div>
+<div id="arranging-with-arrange" class="section level3">
+<h3>Arranging with <code>arrange()</code></h3>
+<p>The general principles here are very similar to <code>filter()</code> except that insted of returning selected rows which meet the <code>filter()</code> conditions, all rows are returned but their order is shuffled around. When using more than one column to order by each additional column will be subsetted within the previous. For example:</p>
+<pre class="r"><code>options(tibble.print_max = 30)
+print(arrange(flights, year, month, day, dep_time), n = 20)</code></pre>
+<pre><code>## # A tibble: 336,776 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## 11  2013     1     1      558            600        -2      849
+## 12  2013     1     1      558            600        -2      853
+## 13  2013     1     1      558            600        -2      924
+## 14  2013     1     1      558            600        -2      923
+## 15  2013     1     1      559            600        -1      941
+## 16  2013     1     1      559            559         0      702
+## 17  2013     1     1      559            600        -1      854
+## 18  2013     1     1      600            600         0      851
+## 19  2013     1     1      600            600         0      837
+## 20  2013     1     1      601            600         1      844
+## # ... with 3.368e+05 more rows, and 12 more variables:
+## #   sched_arr_time &lt;int&gt;, arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>Here the flights are ordered by year (only 2013), month (only January shows on this output), then within January we can see day 1 and then within day 1 we see the earliest flight (this was at 05:17) and so on. You could do the opposite and order the rows in decending order using <code>desc()</code> to tell <code>arrange()</code> to produce the oposite:</p>
+<pre class="r"><code>print(arrange(flights, desc(year), desc(month), desc(day), desc(dep_time)), n = 20)</code></pre>
+<pre><code>## # A tibble: 336,776 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013    12    31     2356           2359        -3      436
+##  2  2013    12    31     2355           2359        -4      430
+##  3  2013    12    31     2332           2245        47       58
+##  4  2013    12    31     2328           2330        -2      412
+##  5  2013    12    31     2321           2250        31       46
+##  6  2013    12    31     2310           2255        15        7
+##  7  2013    12    31     2245           2250        -5     2359
+##  8  2013    12    31     2235           2245       -10     2351
+##  9  2013    12    31     2218           2219        -1      315
+## 10  2013    12    31     2211           2159        12      100
+## 11  2013    12    31     2206           2110        56       44
+## 12  2013    12    31     2159           2155         4       55
+## 13  2013    12    31     2155           2039        76      253
+## 14  2013    12    31     2155           2150         5      110
+## 15  2013    12    31     2152           2155        -3     2325
+## 16  2013    12    31     2141           2145        -4       29
+## 17  2013    12    31     2138           2141        -3       50
+## 18  2013    12    31     2134           2135        -1       21
+## 19  2013    12    31     2132           2130         2       41
+## 20  2013    12    31     2128           2135        -7      101
+## # ... with 3.368e+05 more rows, and 12 more variables:
+## #   sched_arr_time &lt;int&gt;, arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>If you are looking for any <em><code>NA</code></em> values you will find them at the bottom of your table. <code>arrange()</code> doesn’t know what these are so it can’t sort them into any particular order…</p>
+<div id="quiz-time-1" class="section level4">
+<h4>Quiz time</h4>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>How could you use <code>arrange()</code> to sort all missing values within <code>flights</code> to the start? (<code>is.na()</code> will be useful) <details> <summary>Answer</summary> <code>arrange(flights, !is.na(dep_time))</code> or <code>arrange(flights, desc(is.na(dep_time)))</code> </details><br />
+</li>
+<li>Sort <code>flights</code> to find the most delayed flights. <details> <summary>Answer</summary> <code>arrange(flights, desc(dep_delay))</code> </details><br />
+</li>
+<li>Sort <code>flights</code> to find the fastest flights. <details> <summary>Answer</summary> <code>arrange(flights, distance/air_time)</code> </details><br />
+</li>
+<li>Order by which flights flew the greatest distance. <details> <summary>Answer</summary> <code>arrange(flights, distance)</code> </details></li>
+</ol>
+</blockquote>
+</div>
+</div>
+<div id="selectively-selecting-columns-with-select" class="section level3">
+<h3>Selectively selecting columns with <code>select()</code></h3>
+<p>We might not always have a use for this function but we will go over it quickly. Suppose you have a <code>data.frame</code> with only a few columns that you want out of the whole thing - like this <code>flights</code> data set. Perhaps we are only interested in which airline had the greatest delays. We could narrow our <code>data.frame</code> down by calling:</p>
+<pre class="r"><code>select(flights, dep_delay, arr_delay, carrier)</code></pre>
+<pre><code>## # A tibble: 336,776 x 3
+##    dep_delay arr_delay carrier
+##        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  
+##  1         2        11 UA     
+##  2         4        20 UA     
+##  3         2        33 AA     
+##  4        -1       -18 B6     
+##  5        -6       -25 DL     
+##  6        -4        12 UA     
+##  7        -5        19 B6     
+##  8        -3       -14 EV     
+##  9        -3        -8 B6     
+## 10        -2         8 AA     
+## # ... with 336,766 more rows</code></pre>
+<pre class="r"><code>## by ordering our columns we can quickly reorder our new data.frame:
+select(flights, carrier, dep_delay, arr_delay)</code></pre>
+<pre><code>## # A tibble: 336,776 x 3
+##    carrier dep_delay arr_delay
+##    &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 UA              2        11
+##  2 UA              4        20
+##  3 AA              2        33
+##  4 B6             -1       -18
+##  5 DL             -6       -25
+##  6 UA             -4        12
+##  7 B6             -5        19
+##  8 EV             -3       -14
+##  9 B6             -3        -8
+## 10 AA             -2         8
+## # ... with 336,766 more rows</code></pre>
+<pre class="r"><code>## some other useful functions of select():
+select(flights, year:dep_time) ## selects all columns between and including the requested</code></pre>
+<pre><code>## # A tibble: 336,776 x 4
+##     year month   day dep_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;
+##  1  2013     1     1      517
+##  2  2013     1     1      533
+##  3  2013     1     1      542
+##  4  2013     1     1      544
+##  5  2013     1     1      554
+##  6  2013     1     1      554
+##  7  2013     1     1      555
+##  8  2013     1     1      557
+##  9  2013     1     1      557
+## 10  2013     1     1      558
+## # ... with 336,766 more rows</code></pre>
+<pre class="r"><code>select(flights, -(carrier:time_hour)) ## returns all but those mentioned in the query</code></pre>
+<pre><code>## # A tibble: 336,776 x 9
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 2 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;</code></pre>
+<p>What I have found is <code>select()</code>’s most useful function is its simple renaming ability:</p>
+<pre class="r"><code>select(flights, tail.num = tailnum) ## returns the selected column (tail_num) and gives it a new name (tail.num). This is great but only returns the selected columns. rename() is a function that returns all columns and applies the requested renaming:</code></pre>
+<pre><code>## # A tibble: 336,776 x 1
+##    tail.num
+##    &lt;chr&gt;   
+##  1 N14228  
+##  2 N24211  
+##  3 N619AA  
+##  4 N804JB  
+##  5 N668DN  
+##  6 N39463  
+##  7 N516JB  
+##  8 N829AS  
+##  9 N593JB  
+## 10 N3ALAA  
+## # ... with 336,766 more rows</code></pre>
+<pre class="r"><code>rename(flights, tail.num = tailnum)</code></pre>
+<pre><code>## # A tibble: 336,776 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tail.num &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>One more useful function combination is <code>select(... , everything())</code> which brings selected columns to the beginning of the <code>data.frame</code> and then places everthing else subsequent to those:</p>
+<pre class="r"><code>select(flights, time_hour, air_time, everything()) </code></pre>
+<pre><code>## # A tibble: 336,776 x 19
+##    time_hour           air_time  year month   day dep_time sched_dep_time
+##    &lt;dttm&gt;                 &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;
+##  1 2013-01-01 05:00:00      227  2013     1     1      517            515
+##  2 2013-01-01 05:00:00      227  2013     1     1      533            529
+##  3 2013-01-01 05:00:00      160  2013     1     1      542            540
+##  4 2013-01-01 05:00:00      183  2013     1     1      544            545
+##  5 2013-01-01 06:00:00      116  2013     1     1      554            600
+##  6 2013-01-01 05:00:00      150  2013     1     1      554            558
+##  7 2013-01-01 06:00:00      158  2013     1     1      555            600
+##  8 2013-01-01 06:00:00       53  2013     1     1      557            600
+##  9 2013-01-01 06:00:00      140  2013     1     1      557            600
+## 10 2013-01-01 06:00:00      138  2013     1     1      558            600
+## # ... with 336,766 more rows, and 12 more variables: dep_delay &lt;dbl&gt;,
+## #   arr_time &lt;int&gt;, sched_arr_time &lt;int&gt;, arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;,
+## #   flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, distance &lt;dbl&gt;,
+## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;</code></pre>
+<div id="quiz-time-2" class="section level4">
+<h4>Quiz time</h4>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Think of as many ways as possible to select <code>dep_time</code>, <code>dep_delay</code>, <code>arr_time</code>, and <code>arr_delay</code> from <code>flights</code>.<br />
+</li>
+<li>What happens if you include the name of a variable multiple times in a <code>select()</code> call?<br />
+</li>
+<li>What does the <code>one_of()</code> function do in combination with <code>select()</code>? How could you use it with <code>vars &lt;- c(&quot;year&quot;, &quot;month&quot;, &quot;day&quot;, &quot;dep_delay&quot;, &quot;arr_delay&quot;)</code>?</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="4" style="list-style-type: decimal">
+<li>Does the result of running <code>select(flights, contains(&quot;TIME&quot;))</code> surprise you? How do the select helpers deal with case by default? How can you change that default?<br />
+<details> <summary>Answer</summary> HINT: have a look at the arguments that <code>contains()</code> (and other <code>select_helpers</code> type functions) can select. </details></li>
+</ol>
+</blockquote>
+</div>
+</div>
+<div id="mutating-isnt-just-for-genetics" class="section level3">
+<h3>Mutating isn’t just for genetics</h3>
+<p><code>mutate()</code> is a pretty neat funcion that can really speed up generating new variables from columns already present in your <code>data.frame</code>. It works in a similar way to everything else we’ve used so far. The basic call is <code>mutate(data.frame, new.column.name = column.3 * column.5)</code>. The new column always gets attached to your <code>data.frame</code> at the end so it is sometimes useful to select relavant columns first and then mutate those:</p>
+<pre class="r"><code>flights.sml &lt;- select(flights, 
+                      year:day, 
+                      ends_with(&quot;delay&quot;), 
+                      distance, air_time)
+mutate(flights.sml, 
+       gain = dep_delay - arr_delay, 
+       speed = distance / air_time * 60)</code></pre>
+<pre><code>## # A tibble: 336,776 x 9
+##     year month   day dep_delay arr_delay distance air_time  gain speed
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1  2013     1     1         2        11     1400      227    -9  370.
+##  2  2013     1     1         4        20     1416      227   -16  374.
+##  3  2013     1     1         2        33     1089      160   -31  408.
+##  4  2013     1     1        -1       -18     1576      183    17  517.
+##  5  2013     1     1        -6       -25      762      116    19  394.
+##  6  2013     1     1        -4        12      719      150   -16  288.
+##  7  2013     1     1        -5        19     1065      158   -24  404.
+##  8  2013     1     1        -3       -14      229       53    11  259.
+##  9  2013     1     1        -3        -8      944      140     5  405.
+## 10  2013     1     1        -2         8      733      138   -10  319.
+## # ... with 336,766 more rows</code></pre>
+<pre class="r"><code>##Note how I have reformatted these commands - that makes it much easier to see the individual arguments of each function.</code></pre>
+<p>And you can even refer to columns that you have just made within the same <code>mutate()</code> call:</p>
+<pre><code>## # A tibble: 336,776 x 10
+##     year month   day dep_delay arr_delay distance air_time  gain hours
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1  2013     1     1         2        11     1400      227    -9 3.78 
+##  2  2013     1     1         4        20     1416      227   -16 3.78 
+##  3  2013     1     1         2        33     1089      160   -31 2.67 
+##  4  2013     1     1        -1       -18     1576      183    17 3.05 
+##  5  2013     1     1        -6       -25      762      116    19 1.93 
+##  6  2013     1     1        -4        12      719      150   -16 2.5  
+##  7  2013     1     1        -5        19     1065      158   -24 2.63 
+##  8  2013     1     1        -3       -14      229       53    11 0.883
+##  9  2013     1     1        -3        -8      944      140     5 2.33 
+## 10  2013     1     1        -2         8      733      138   -10 2.3  
+## # ... with 336,766 more rows, and 1 more variable: gain_per_hour &lt;dbl&gt;</code></pre>
+<p>And then suppose only the new variables that you have made are useful to you then <code>transmute()</code> is what you are looking for:</p>
+<pre class="r"><code>transmute(flights,
+            gain = dep_delay - arr_delay, 
+            hours = air_time / 60, 
+            gain_per_hour = gain / hours)</code></pre>
+<pre><code>## # A tibble: 336,776 x 3
+##     gain hours gain_per_hour
+##    &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;
+##  1    -9 3.78          -2.38
+##  2   -16 3.78          -4.23
+##  3   -31 2.67         -11.6 
+##  4    17 3.05           5.57
+##  5    19 1.93           9.83
+##  6   -16 2.5           -6.4 
+##  7   -24 2.63          -9.11
+##  8    11 0.883         12.5 
+##  9     5 2.33           2.14
+## 10   -10 2.3           -4.35
+## # ... with 336,766 more rows</code></pre>
+<p>You can use all sorts of functions together with mutate to create new variables quickly, efficiently, and most importantly, without ever needing Excel again! To quickly calculate the proportion of something you could do <code>something / sum (something)</code> for instance. Or to find the differece from the mean you could do:</p>
+<pre class="r"><code>mutate(flights, mean.diff.arr_delay = arr_delay - mean(arr_delay))</code></pre>
+<pre><code>## # A tibble: 336,776 x 20
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 13 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;, mean.diff.arr_delay &lt;dbl&gt;</code></pre>
+<p>There are plenty of other specifically designed funcitons for <code>mutate()</code> for generating cumulative frequencies, ranked data, log transformations and even somthing called <a href="https://en.wikipedia.org/wiki/Modular_arithmetic">modular arithmatic</a>! We will skip the quiz for this verb but i encourage you to read the <a href="https://dplyr.tidyverse.org/reference/mutate.html">documentation on <code>mutate()</code></a>.</p>
+</div>
+<div id="summaries-made-easy-with-summarise" class="section level3">
+<h3>Summaries made easy with <code>summarise()</code>!</h3>
+<p>This is the last main <code>dplyr</code> function we will look at in this workshop. At first you might think it’s pretty lame:</p>
+<pre class="r"><code>summarise(flights, delay = mean(dep_delay, na.rm = TRUE)) ## na.rm is a boolean argument addressing what to do with, well, NA&#39;s. rm() is a base R function which removes any object from your environment.</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   delay
+##   &lt;dbl&gt;
+## 1  12.6</code></pre>
+<p>But wait until you use it with <code>group_by()</code>. This function creates new mini datasets within your <code>data.frame</code> which <code>summarise</code> then acts on:</p>
+<pre class="r"><code>by.day &lt;- group_by(flights, year, month, day)
+summarise(by.day, delay = mean(dep_delay, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 365 x 4
+## # Groups:   year, month [?]
+##     year month   day delay
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
+##  1  2013     1     1 11.5 
+##  2  2013     1     2 13.9 
+##  3  2013     1     3 11.0 
+##  4  2013     1     4  8.95
+##  5  2013     1     5  5.73
+##  6  2013     1     6  7.15
+##  7  2013     1     7  5.42
+##  8  2013     1     8  2.55
+##  9  2013     1     9  2.28
+## 10  2013     1    10  2.84
+## # ... with 355 more rows</code></pre>
+<p>This is a great way to create a quic ksummary view of your dataset based on treatments (for each day of the year in this case). But there is something a little tedious about the way we have been writing our code here which might only be becoming apparant now. Every time we use a <code>dplyr</code> function we have to tell it what <code>data.frame</code> to look at. But how often will we look for data between <code>data.frame</code>s? Very unlikely. The annoying thing is that each time we want to use a new function we need to create a new <code>data.frame</code> and so we are stuck typing the name out every time. Even for small summaries this is a headache. That’s where this amazing new idea comes into the picture. Meet the pipe: <code>%&gt;%</code></p>
+<div id="piping-101" class="section level4">
+<h4>Piping 101</h4>
+<p>Suppose we wanted to delve a little deeper into the relationship between the distance and average delay for each location:</p>
+<pre class="r"><code>by_dest &lt;- group_by(flights, dest)
+delay &lt;- summarise(by_dest,
+  count = n(),
+  dist = mean(distance, na.rm = TRUE),
+  delay = mean(arr_delay, na.rm = TRUE)
+)
+delay &lt;- filter(delay, count &gt; 20, dest != &quot;HNL&quot;)
+
+# It looks like delays increase with distance up to ~750 miles 
+# and then decrease. Maybe as flights get longer there&#39;s more 
+# ability to make up delays in the air?</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39;</code></pre>
+<p><img src="Data_wrangling_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>There are three broad steps to getting our data into this form: 1. Group flights by destination and save these as <code>by_dest</code>. 2. Summarise the distance, average delay, and number of flights and save this as <code>delay</code>. 3. Overwrite <code>delay</code> by filtering out the noisy points (the outliers) What we are left with are a bunch of unused <code>data.frame</code>s which we aren’t really interested in. We end up spending time naming arbitrary objects which wastes our time and clutters up our environment. But luckily there are some pretty smart people who also don’t like doing this and so they developed the pipe, <code>%&gt;%</code>. We can do the same operation as:</p>
+<pre class="r"><code>delays &lt;- flights %&gt;% 
+  group_by(dest) %&gt;% 
+  summarise(
+    count = n(), 
+    dist = mean(distance, na.rm = TRUE), 
+    delay = mean(arr_delay, na.rm = TRUE)
+  ) %&gt;%
+  filter(count &gt; 20, dest != &quot;HNL&quot;)
+
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39;</code></pre>
+<p><img src="Data_wrangling_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>Writing our code like this keeps our focus on what’s important, the data transformations themselves rather than what variable is being transformed. The important difference to note is that we start with the biggest object and then whittle it down into something smaller. We also don’t need to refer to where the data are coming from within each function anymore because the <code>%&gt;%</code> tells the new function to look at the result of the previous function to know what to use.</p>
+</div>
+<div id="counts" class="section level4">
+<h4>Counts</h4>
+<p>An important part of any summary is knowing how many observations the summary is based on. Is this mean value the result of 3 or 300 observations (the latter is probably more reliable I suspect). Let’s see this in practice by checking which individual planes (referenced by their tail number) have the longest average delay:</p>
+<pre class="r"><code>## just some sorting out here. I am getting all the flights that were not cancelled (cancelled flights are those which have NA values):
+not_cancelled &lt;- flights %&gt;% 
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+## quickly summarise these to get the average depature delay:
+not_cancelled %&gt;% 
+  group_by(year, month, day) %&gt;% 
+  summarise(mean = mean(dep_delay))</code></pre>
+<pre><code>## # A tibble: 365 x 4
+## # Groups:   year, month [?]
+##     year month   day  mean
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
+##  1  2013     1     1 11.4 
+##  2  2013     1     2 13.7 
+##  3  2013     1     3 10.9 
+##  4  2013     1     4  8.97
+##  5  2013     1     5  5.73
+##  6  2013     1     6  7.15
+##  7  2013     1     7  5.42
+##  8  2013     1     8  2.56
+##  9  2013     1     9  2.30
+## 10  2013     1    10  2.84
+## # ... with 355 more rows</code></pre>
+<pre class="r"><code>delays &lt;- not_cancelled %&gt;% 
+  group_by(tailnum) %&gt;% 
+  summarise(
+    delay = mean(arr_delay)
+  )
+
+ggplot(data = delays, mapping = aes(x = delay)) + 
+  geom_density()</code></pre>
+<p><img src="Data_wrangling_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>This looks like planes from South Africa, some planes have average delays of five hours (300 minutes)! But this seems like a bit extreme. If we incorporate the number of flights vs. average delay we could get a somewhat clearer picture:</p>
+<pre class="r"><code>delays &lt;- not_cancelled %&gt;% 
+  group_by(tailnum) %&gt;% 
+  summarise(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(data = delays, mapping = aes(x = n, y = delay)) + 
+  geom_point(alpha = 1/10)</code></pre>
+<p><img src="Data_wrangling_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>It isn’t really surprising that the fewer the total number of flights the greater the variation in the average delay. Generally the variation seems to decrease as the sample size increases. To get around all this noise and to get to the real trends it is helpful to filter out the mean points which have fewer points: <img src="Data_wrangling_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+</div>
+<div id="other-useful-summary-functions" class="section level4">
+<h4>Other useful summary functions</h4>
+<p>Mean, counts and summaries can be useful to include but we can produce summaries of so many more things and print them out in our same table:</p>
+<pre class="r"><code>not_cancelled %&gt;% 
+  group_by(year, month, day) %&gt;% 
+  summarise(
+    avg_delay = mean(arr_delay),
+    med_delay = median(arr_delay), 
+    sd_delay = sd(arr_delay)
+  )</code></pre>
+<pre><code>## # A tibble: 365 x 6
+## # Groups:   year, month [?]
+##     year month   day avg_delay med_delay sd_delay
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1  2013     1     1    12.7           3     49.3
+##  2  2013     1     2    12.7           4     41.5
+##  3  2013     1     3     5.73          1     35.6
+##  4  2013     1     4    -1.93         -8     30.7
+##  5  2013     1     5    -1.53         -7     27.6
+##  6  2013     1     6     4.24         -1     27.4
+##  7  2013     1     7    -4.95        -10     29.7
+##  8  2013     1     8    -3.23         -7     23.2
+##  9  2013     1     9    -0.264        -6     48.3
+## 10  2013     1    10    -5.90        -11     45.4
+## # ... with 355 more rows</code></pre>
+<p>I have just attempted to summarise a massive chapter on summarising into what I think would be useful for us to know as biologists. But to make sure you are getting it and are fluent with data transfomation and data wrangling I would really encourage you to check out <a href="http://r4ds.had.co.nz/transform.html">this chapter</a> online.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

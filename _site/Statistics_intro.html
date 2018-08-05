@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Stuart Demmer" />
+
+<meta name="date" content="2018-08-03" />
+
+<title>Statistics in R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Introduction.html">Intro</a>
+</li>
+<li>
+  <a href="Baby_steps.html">Baby steps</a>
+</li>
+<li>
+  <a href="Data_wrangling.html">Data wrangling</a>
+</li>
+<li>
+  <a href="Data_visualisation.html">Data vis</a>
+</li>
+<li>
+  <a href="Statistics_intro.html">Stats intro</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Statistics in R</h1>
+<h4 class="author"><em>Stuart Demmer</em></h4>
+<h4 class="date"><em>03 August 2018</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Welcome back! I hope you are ready for the real meat of our course - the beginnings of putting all of what we have been learining into practice. But in order to understand what we are going to be doing here we need to have a quick recap of basic statistics. In their simplest definition many univariate parametric statistical tests (those are things like t-test, ANOVA, GLM, GLMM) are testing for whether the means from two or more treatments are stastically different. They do this by calculating the proportion of either treatment’s distribution that overlaps with the other treatment’s distribution. If that proportion is sufficiently low (say around 5%) then we reject the null hypothesis (the distributions overlap one another too much and so we cannot say with sufficient surity that the means are really different). Otherwise if there is more that around 5% overlap we can’t reject the null hypothesis and so the means are not different. Right so let’s start at the beginning.</p>
+<div id="t-test" class="section level2">
+<h2>T-test</h2>
+<p>There are several different kinds of t-tests. I’m not going to go through them all here, they all work in a similar manner. For now we will just go with the independent samples t-test. This tests for whether the difference between the two treatment means is different from zero. If it is then the means are not the same. Let’s pull up some data:</p>
+<pre class="r"><code>sleep</code></pre>
+<pre><code>##    extra group ID
+## 1    0.7     1  1
+## 2   -1.6     1  2
+## 3   -0.2     1  3
+## 4   -1.2     1  4
+## 5   -0.1     1  5
+## 6    3.4     1  6
+## 7    3.7     1  7
+## 8    0.8     1  8
+## 9    0.0     1  9
+## 10   2.0     1 10
+## 11   1.9     2  1
+## 12   0.8     2  2
+## 13   1.1     2  3
+## 14   0.1     2  4
+## 15  -0.1     2  5
+## 16   4.4     2  6
+## 17   5.5     2  7
+## 18   1.6     2  8
+## 19   4.6     2  9
+## 20   3.4     2 10</code></pre>
+<p>This data shows the response of students to a sleeping drug. Extra shows the change in hours slept, group shows the treatment that they were given, and ID is the participant number. Technically this is a paired sample but we will ignore that for now. Let’s plot the density distributions and boxplots of the two groups of students:</p>
+<pre class="r"><code>sleep.dens &lt;- ggplot(data = sleep, aes(x = extra, colour = group)) + 
+  geom_density()
+sleep.box &lt;- ggplot(data = sleep, aes(x = group, y = extra)) + 
+  geom_boxplot()
+plot_grid(sleep.dens, sleep.box, labels = &quot;AUTO&quot;)</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>So group two definitely seems to gain around an hour and a half or so more hours of sleep. But this is just visual data analysis - not very statistical…</p>
+<p>To test this we can call up <code>t.test()</code>. type <code>?t.test</code> to pull up the help file. There are two methods that we can use to enter our data into the arguments of this function - the one I find the most useful is the <code>## S3 method for class 'formula'</code>. This is a pretty universal way that many statistical functions require their arguments to be inputted:</p>
+<p><em><code>test.name()</code> - the name of the formula to carry out the required statistical calculation. </em><code>formula</code> - the formula that the distributions follow. The response variable (the y value, what we measured) goes on the left. The factors which describe the response variable’s distribution go on the right. These two sides are sepparated by a <code>~</code>. *<code>data</code> - where the data can be found.</p>
+<p>That’s it. There are other arguments that are specific to the kind of test that can also be included in these functions. We can play around with these in a moment but for now let’s run the test:</p>
+<pre class="r"><code>sleepTtest &lt;- t.test(extra ~ group, data = sleep)
+sleepTtest</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  extra by group
+## t = -1.8608, df = 17.776, p-value = 0.07939
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -3.3654832  0.2054832
+## sample estimates:
+## mean in group 1 mean in group 2 
+##            0.75            2.33</code></pre>
+<p>That is a pretty neat output. Note what I did there - I saved the test as a variable called <code>sleepTtest</code> (I could have called it anything) and then I called that variable. As soon as I run both those lines my output is printed out. The great thing about doing it this way is that once I have saved my output it is saved - I don’t have to sift through pages of SPSS output printouts looking for the test I want anymore. If I want to know what the details of the test were then I can just call <code>sleepTtest</code> again and I’ll have my answer.</p>
+<p>Our output here showed that the mean difference was not significant at the 5% level. But looking at the <code>ID</code> field we can see that these are the same subjects and so the test is actually a paired samples test. To incorporate this new bit of information into our test we can go:</p>
+<pre class="r"><code>sleepTtest &lt;- t.test(extra ~ group, data = sleep, paired = TRUE)
+sleepTtest</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  extra by group
+## t = -4.0621, df = 9, p-value = 0.002833
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.4598858 -0.7001142
+## sample estimates:
+## mean of the differences 
+##                   -1.58</code></pre>
+<p>And there you have it - this sleeping pill significantly improves the students’ sleeping time by giving them an extra 1.58 hours of sleep! Pretty neat hey. But in the life sciences we seldom do tests involving only two treatments and so analysis of variance is probably more relevant to us. The method is similar.</p>
+</div>
+<div id="analysis-of-variance" class="section level2">
+<h2>Analysis of variance</h2>
+<div id="aov" class="section level3">
+<h3><code>aov()</code></h3>
+<p>The dataset we will use here is called <code>npk</code>. Peas were fertilised with combinations of nitrogen, phosphorus, and potassium using a factorial disign:</p>
+<pre class="r"><code>npk</code></pre>
+<pre><code>##    block N P K yield
+## 1      1 0 1 1  49.5
+## 2      1 1 1 0  62.8
+## 3      1 0 0 0  46.8
+## 4      1 1 0 1  57.0
+## 5      2 1 0 0  59.8
+## 6      2 1 1 1  58.5
+## 7      2 0 0 1  55.5
+## 8      2 0 1 0  56.0
+## 9      3 0 1 0  62.8
+## 10     3 1 1 1  55.8
+## 11     3 1 0 0  69.5
+## 12     3 0 0 1  55.0
+## 13     4 1 0 0  62.0
+## 14     4 1 1 1  48.8
+## 15     4 0 0 1  45.5
+## 16     4 0 1 0  44.2
+## 17     5 1 1 0  52.0
+## 18     5 0 0 0  51.5
+## 19     5 1 0 1  49.8
+## 20     5 0 1 1  48.8
+## 21     6 1 0 1  57.2
+## 22     6 1 1 0  59.0
+## 23     6 0 1 1  53.2
+## 24     6 0 0 0  56.0</code></pre>
+<p>So we have three treatment variables with one blocking variable. Pretty standard agricultural or greenhouse experiment. To test for whether the means of the different treatments are present we would follow a similar proceedure. We will use <code>aov()</code> to conduct the analysis and then in order to produce the output analysis of variance table we will use <code>anova()</code>. The three most reasonable ways we could carry out this analysis are:</p>
+<pre class="r"><code>## the most basic model. Fertilisation as main effects. No blocking or interactions incorporated.
+npkAov &lt;- aov(yield ~ N + P + K, data = npk)
+
+## blocking has now been included.
+npkAov &lt;- aov(yield ~ N + P + K + block, data = npk)
+
+## both interactions and blocking have been incorporated into our model
+npkAov &lt;- aov(yield ~ N*P*K + block, data = npk)</code></pre>
+</div>
+<div id="anova" class="section level3">
+<h3><code>anova()</code></h3>
+<p>Having done that we need to call a separate function to produce our analysis of variance table. <code>anova()</code> produces anova tables for <code>aov()</code>, <code>lm()</code> (linear models), and <code>glm()</code>. To get the output all we need to do is:</p>
+<pre class="r"><code>anova(npkAov)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: yield
+##           Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+## block      5 343.29  68.659  4.4467 0.015939 * 
+## N          1 189.28 189.282 12.2587 0.004372 **
+## P          1   8.40   8.402  0.5441 0.474904   
+## K          1  95.20  95.202  6.1657 0.028795 * 
+## N:P        1  21.28  21.282  1.3783 0.263165   
+## N:K        1  33.13  33.135  2.1460 0.168648   
+## P:K        1   0.48   0.482  0.0312 0.862752   
+## Residuals 12 185.29  15.441                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>That’s a pretty neat little output. But copying it into our document isn’t as easy as you might think. This output is only text - to put it into a tabular form we need to tidy it up using <code>tidy()</code> from the <code>broom</code> package. Install <code>broom</code> now, load it from the library and then go:</p>
+<pre class="r"><code>tidyNPKAnova &lt;- tidy(anova(npkAov))
+View(tidyNPKAnova)</code></pre>
+<p>That’s now saved your anova into a neat little table which you can copy into Excel to format the lines. This is the simplest way that I know about how to make tables but there are whole packages specifically dedicated to producing publication quality tables from within R. The way you copy these tables into Excel is that you scroll down to the bottom right corner of the table, click in there and then drag up to the top left. Then copy and paste into Excel - there are better ways but this is quick and nasty.</p>
+</div>
+<div id="post-hoc-ing-with-emmeans" class="section level3">
+<h3><em>post hoc</em>-ing with <code>emmeans</code></h3>
+<p>Okay, now how do we see the results of this analysis of variance graphically? Can we carry out <em>post hoc</em> tests? To be honest this dataset isn’t the greatest for doing that. I chose it because it has lost of variables and it can easily show you how to incorporate multiple variables into the <code>formula</code> argument. To look at <em>post hoc</em> comparrisons we will run a new test on the <code>iris</code> dataset. This contains flower morphology measurements from three species of iris:</p>
+<pre class="r"><code>head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p>Let’s see if there is a difference in <code>Sepal.Width</code> across the three species:</p>
+<pre class="r"><code>ggplot(iris) + 
+  geom_density(aes(x = Sepal.Width, colour = Species))</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
+anova(irisAov)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: Sepal.Width
+##            Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Species     2 11.345  5.6725   49.16 &lt; 2.2e-16 ***
+## Residuals 147 16.962  0.1154                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Ahh - an extremely significant result. It seems likely that versicolor and verginica are somewhat similar but that setosa has much wider sepals. We can extract the means for each species with (what I think is a fantastic package) <code>emmeans</code>. Install it and load it from your library now. This package is incredibly powerful and will be useful when we move on to GLMs in the next section. It extracts the estimated marginal means from the analysis object (<code>irisAov</code> in our case) and then presents them on either the analysis scale or the response scale. Let’s try it out:</p>
+<pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
+irisEmm &lt;- emmeans(irisAov, ~ Species)
+irisEmm</code></pre>
+<pre><code>##  Species    emmean        SE  df lower.CL upper.CL
+##  setosa      3.428 0.0480391 147 3.333064 3.522936
+##  versicolor  2.770 0.0480391 147 2.675064 2.864936
+##  virginica   2.974 0.0480391 147 2.879064 3.068936
+## 
+## Confidence level used: 0.95</code></pre>
+<p>This is the most basic output but already it is very neat and very powerful. We can do better though. If we want the pairwise contrasts for each treatment combination then we can go:</p>
+<pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
+irisEmm &lt;- emmeans(irisAov, ~ Species)
+pairs(irisEmm)</code></pre>
+<pre><code>##  contrast               estimate         SE  df t.ratio p.value
+##  setosa - versicolor       0.658 0.06793755 147   9.685  &lt;.0001
+##  setosa - virginica        0.454 0.06793755 147   6.683  &lt;.0001
+##  versicolor - virginica   -0.204 0.06793755 147  -3.003  0.0088
+## 
+## P value adjustment: tukey method for comparing a family of 3 estimates</code></pre>
+<p>Note that <code>pairs()</code> automatically incorporates an adjustment to the p-value based on the number of treatments! SPSS would never do this. But if this output isn’t easy for you to interpret we can see it graphically:</p>
+<pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
+irisEmm &lt;- emmeans(irisAov, ~ Species)
+## this just plots the means and the confidence intervals
+irisWithout &lt;- plot(irisEmm)
+## this incorporates a red arrow. If the arrows overlap then the means are not different. Verginica and Versicolor are somewhat similar (p = 0.0088) but their arrows do not overlap and so they are regarded as different.
+irisWith &lt;- plot(irisEmm, comparisons = TRUE)
+plot_grid(irisWithout, irisWith, labels = &quot;AUTO&quot;)</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>But wait there is more! You can get this output with number groups. <code>emmeans</code> has a function called <code>cld()</code> which assigns groups of treatments sharing the same mean the same number:</p>
+<pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
+irisEmm &lt;- emmeans(irisAov, ~ Species)
+irisCld &lt;- cld(irisEmm)
+irisCld</code></pre>
+<pre><code>##  Species    emmean        SE  df lower.CL upper.CL .group
+##  versicolor  2.770 0.0480391 147 2.675064 2.864936  1    
+##  virginica   2.974 0.0480391 147 2.879064 3.068936   2   
+##  setosa      3.428 0.0480391 147 3.333064 3.522936    3  
+## 
+## Confidence level used: 0.95 
+## P value adjustment: tukey method for comparing a family of 3 estimates 
+## significance level used: alpha = 0.05</code></pre>
+<p>Clearly all species have drastically different sepal widths. This is a fairly nice output but suppose we wanted to plot it with <code>ggplot2</code>? How would we do that. Well luckily <code>cld()</code> saves the above table as a nice, neat dataframe which we can just dive into with ggplot2:</p>
+<pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
+irisEmm &lt;- emmeans(irisAov, ~ Species)
+irisCld &lt;- cld(irisEmm)
+irisCld</code></pre>
+<pre><code>##  Species    emmean        SE  df lower.CL upper.CL .group
+##  versicolor  2.770 0.0480391 147 2.675064 2.864936  1    
+##  virginica   2.974 0.0480391 147 2.879064 3.068936   2   
+##  setosa      3.428 0.0480391 147 3.333064 3.522936    3  
+## 
+## Confidence level used: 0.95 
+## P value adjustment: tukey method for comparing a family of 3 estimates 
+## significance level used: alpha = 0.05</code></pre>
+<pre class="r"><code>ggplot(data = irisCld) + 
+  geom_pointrange(aes(x = Species, y = emmean, ymin = lower.CL, ymax = upper.CL)) + 
+  geom_text(aes(x = Species, y = upper.CL + 0.075, label = .group))</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Pretty simple hey? No more playing around in PowerPoint to get that right. Everything can be done from right in R. And if you want to be a little more specific with how your labels are positioned these figures are entirely editible as you can export them as a .SVG file. Open that up in a free program called <a href="https://inkscape.org/en/">Inkscape</a> and you can move any point or label around. This will be very useful later when we produce some multivariate figures with lots of species and environmental variable labels. So that is the basics of anova in R. But anovas are not the most reliable statistical tool for testing whether the means of treatments are different. The reason for this is that anova contains many <a href="https://stats.stackexchange.com/questions/6350/anova-assumption-normality-normal-distribution-of-residuals">assuptions</a>. This means that if we want to ensure our data meet this seemingly endless list of assumptions then we need to drastically transform our data - something which is challenging to do in itself and then you are left with results based on transformed data which your reader probably can’t understand very well. That’s where GLMs (generalised linear models) come into the picture. You’ll never use t-tests or anovas again!</p>
+</div>
+</div>
+<div id="generalised-linear-models" class="section level2">
+<h2>Generalised linear models</h2>
+<div id="glm" class="section level3">
+<h3><code>glm()</code></h3>
+<p>The main constraint with our data is the distribution that it follows. If you’ve noticed before almost every test that we have carried out I have produced a density plot to show how the raw data are distributed. This is a very important thing to do because the underlying distribution dictates how you should carry out your analysis. On top of that the kind of data you’ve collected further details your analysis techniques.</p>
+<p><code>glm()</code> is is the function that we use to give more detailed descriptions of how we want our data to be analysed. It constains similar arguments to our previous functions (<code>formula</code> and <code>data</code>) but it adds another key argument (<code>family</code>). This argument allows you to tell <code>glm()</code> what kind of distribution it should use to analyse your data. Type <code>?family</code> to get a quick run down of the different families that are available. In some extreme cases your data might not align towards any of those families (such as when you have lots of zeros on a continuous positive scale). If that happens there are packages that you can load which allow you to modify your distributions to handle this difficult kind of data. GLMs allow you to accurately model:</p>
+<ul>
+<li>normally distributed data - very rare actually, gaussian distribution (if we run a GLM with a gaussian distribution we will basically get an anova).<br />
+</li>
+<li>proportional data - anything that is bound between zero and one,germination proportion, seed set, time spent doing a particular activity, binomial distribution.<br />
+</li>
+<li>count data - integers greater than one, number of animals spotted, number of plants in a community, poisson distribution.</li>
+<li>continuous data - the most common, length of leaves, biomass weights, gamma distribution.</li>
+</ul>
+<p>Each distribution family has something called a link function associated with it. This is a transformation method that is used to take your untransformed data and fit it to the distribution that you have chosen. These are normally matched to your family but you can modify them should you wish to. Generally we can keep this at the standard setting.</p>
+<div id="gamma-family" class="section level4">
+<h4><code>Gamma()</code> family</h4>
+<p>To carry out our analyses here we are going to need to access some data contained within another package. Please download <code>car</code>. Load this package and the <code>carData</code> package. The datasets that we will use here are contained within the latter package. Type <code>View(carData::Salaries)</code> to pull up and expect the dataset. Type <code>?carData::Salaries</code> to pull up the dataset’s help file.</p>
+<pre class="r"><code>sal.rank &lt;- ggplot(data = Salaries) + 
+  geom_density(mapping = aes(x = salary, colour = rank))
+sal.disc &lt;- ggplot(data = Salaries) + 
+  geom_density(mapping = aes(x = salary, colour = discipline))
+sal.sex &lt;- ggplot(data = Salaries) + 
+  geom_density(mapping = aes(x = salary, colour = sex))
+plot_grid(sal.rank, sal.disc, sal.sex, labels = &quot;AUTO&quot;)</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Not quite a normal distribution. These data follow a gamma distribution. There are a couple of other variables in this dataset but for now we will just stick with categorical factors. We’ll compare the analysis of these three factors on a normal and gamma distribution:</p>
+<pre class="r"><code>salariesGLMgaus &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = gaussian())
+salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+print(&quot;Gaussian model AIC: &quot;)</code></pre>
+<pre><code>## [1] &quot;Gaussian model AIC: &quot;</code></pre>
+<pre class="r"><code>print(salariesGLMgaus$aic)</code></pre>
+<pre><code>## [1] 9106.881</code></pre>
+<pre class="r"><code>print(&quot;Gamma model AIC: &quot;)</code></pre>
+<pre><code>## [1] &quot;Gamma model AIC: &quot;</code></pre>
+<pre class="r"><code>print(salariesGLMgamma$aic)</code></pre>
+<pre><code>## [1] 9006.735</code></pre>
+<p>We’ve just saved the GLM calls into two different object names. We’ve then looked into those objects and then called up the AIC value. This stands for the “An Information Criterion”. This is a mesurement of how well the data fit the model we have chosen - the lower the number the better the fit so choosing the <code>Gamma()</code> family is the better option. The number is on an arbitrary scale.<br />
+Now that we’ve called up <code>cars</code> (the package name stands for “Companion to Applied Regression”) we can use its <code>Anova()</code> function instead of the basic <code>anova()</code>:</p>
+<pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+Anova(salariesGLMgamma)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: salary
+##                     LR Chisq Df Pr(&gt;Chisq)    
+## rank                  368.02  2  &lt; 2.2e-16 ***
+## discipline             40.56  1  1.906e-10 ***
+## sex                     1.93  1    0.16490    
+## rank:discipline         6.01  2    0.04949 *  
+## rank:sex                0.52  2    0.77255    
+## discipline:sex          1.77  1    0.18343    
+## rank:discipline:sex     0.64  2    0.72793    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We can also use <code>anova()</code> but then we would also have to tell the function what test to run. If we don’t then it won’t compute the test statistic and <em>p-value</em>.</p>
+<pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+anova(salariesGLMgamma)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: Gamma, link: inverse
+## 
+## Response: salary
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##                     Df Deviance Resid. Df Resid. Dev
+## NULL                                  396     27.044
+## rank                 2  12.4840       394     14.560
+## discipline           1   1.3819       393     13.178
+## sex                  1   0.0741       392     13.104
+## rank:discipline      2   0.2335       390     12.871
+## rank:sex             2   0.0129       388     12.858
+## discipline:sex       1   0.0603       387     12.798
+## rank:discipline:sex  2   0.0216       385     12.776</code></pre>
+<pre class="r"><code>anova(salariesGLMgamma, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: Gamma, link: inverse
+## 
+## Response: salary
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##                     Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                                  396     27.044              
+## rank                 2  12.4840       394     14.560 &lt; 2.2e-16 ***
+## discipline           1   1.3819       393     13.178 1.901e-10 ***
+## sex                  1   0.0741       392     13.104   0.14022    
+## rank:discipline      2   0.2335       390     12.871   0.03246 *  
+## rank:sex             2   0.0129       388     12.858   0.82708    
+## discipline:sex       1   0.0603       387     12.798   0.18343    
+## rank:discipline:sex  2   0.0216       385     12.776   0.72793    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>So now that we have our anova table we can see that both rank and discipline but not sex affect the salaries of professors at one United States university. But there is also an interaction effect between rank and discipline. The effect of rank is not consistant across disciplnes. Let’s have a closer look at this using emmeans:</p>
+<pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+plot(emmeans(salariesGLMgamma, ~rank), comparisons = TRUE)</code></pre>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code>plot(emmeans(salariesGLMgamma, ~discipline), comparisons = TRUE)</code></pre>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
+<pre class="r"><code>plot(emmeans(salariesGLMgamma, ~rank*discipline), comparisons = TRUE)</code></pre>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-20-3.png" width="672" /></p>
+<p>And now lets plot the interaction with groupings in ggplot:</p>
+<pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+rankDiscCld &lt;- cld(emmeans(salariesGLMgamma, ~rank*discipline, type = &quot;response&quot;))</code></pre>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre class="r"><code>ggplot(rankDiscCld) + 
+  geom_pointrange(mapping = aes(x = rank, y = response, ymin = asymp.LCL, ymax = asymp.UCL, colour = discipline), position = position_dodge(0.5)) + 
+  geom_text(mapping = aes(x = rank, y = asymp.UCL + 6000, group = discipline, label = .group), position = position_dodge(0.5))</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>With <code>geom_text()</code> we need to tell ggplot how to group the different labels - we know that we must go with rank on the x-axis. Then we group by discipline and add a bit of space between the label and the upper confidence interval bar. But let’s see about making this figure “publication quality”:</p>
+<pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, 
+                        data = Salaries, 
+                        family = Gamma())
+
+rankDiscCld &lt;- cld(emmeans(salariesGLMgamma, 
+                           ~rank*discipline, 
+                           type = &quot;response&quot;))</code></pre>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre class="r"><code>ggplot(rankDiscCld) + 
+  geom_pointrange(mapping = aes(x = rank, 
+                                y = response, 
+                                ymin = asymp.LCL, 
+                                ymax = asymp.UCL, 
+                                colour = discipline), 
+                  position = position_dodge(0.5)) + 
+  geom_text(mapping = aes(x = rank, 
+                          y = asymp.UCL + 6000, 
+                          group = discipline, 
+                          label = .group), 
+            position = position_dodge(0.5)) + 
+  theme(axis.title = element_text(size = 11, 
+                                  colour = &quot;black&quot;),
+        axis.text = element_text(size = 9, 
+                                 colour = &quot;black&quot;), 
+        legend.background = element_blank(), 
+        legend.text = element_text(size = 10, 
+                                   colour = &quot;black&quot;), 
+        legend.title = element_text(size = 11, 
+                                    colour = &quot;black&quot;)) + 
+  labs(x = &quot;Position&quot;, 
+       y = &quot;Annual salary ($)&quot;, 
+       colour = &quot;Discipline&quot;) + 
+  scale_x_discrete(labels = c(&quot;Assistant prof&quot;, 
+                              &quot;Associate prof&quot;, 
+                              &quot;Full prof&quot;))</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><code>theme()</code>, <code>labs()</code> and <code>scale_x_discrete()</code> may scare you at first but there isn’t much to them. You can probably get a good idea of what is going on without much explanation - it’s mainly just changing text sizes and colours, adding new labels to the x-axis and adding new title to the x and y axes. That’s about all there is to taking a GLM from start to finish.</p>
+</div>
+<div id="binomial-family" class="section level4">
+<h4><code>binomial()</code> family</h4>
+<p>I will quickly go through some details regarding the binomial distribution because it is a powerful distribution that is probably under-utilised. This distribution describes data which have a ‘success/failure’ kind of response. The key advantage of this distribution is that the y side of the formula can accept several ways of presenting data. The data can be in the form of proportions (values between zero and one), binary responses (ones or zeros), or successes and failures from which proportions can be calculated (suppose 40 seeds were planted, 28 germinate and 12 do not we would input the successes as 28 and the failures as 12). The last method is the most powerful I think because it incorporates a weighting (40 seeds for that recording) as well as the proportion. Just putting 0.7 in (28/40) does not tell the analysis how many individuals made up that data point. If there are several different numbers of seeds that are planted then the analysis takes those different numbers into consideration. Let’s see this in action. We are going to use a dataset which describes the number of visits to sunflowers over five minutes at sites which are at different distances away from an <em>Apis melifera</em> apiry. <code>visitSoc</code> describes the number of visits from social bees - <em>A. melifera</em>, and <code>visitSol</code> describes visits from solitary bees. <code>site</code> describes the site’s distance from the apiary, and <code>area</code> describes the size of the area that the site occupies.</p>
+<pre class="r"><code>sunflowerGlm &lt;- glm(cbind(visitSoc, visitSol) ~ site, data = sunflower, family = binomial())
+Anova(sunflowerGlm)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: cbind(visitSoc, visitSol)
+##      LR Chisq Df Pr(&gt;Chisq)    
+## site   71.787  2  2.581e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>sunflowerSiteCld &lt;- cld(emmeans(sunflowerGlm, ~site, type = &quot;response&quot;))
+
+ggplot(sunflowerSiteCld) + 
+  geom_pointrange(mapping = aes(x = site, 
+                                y = prob, 
+                                ymin = asymp.LCL, 
+                                ymax = asymp.UCL), 
+                  position = position_dodge(0.5)) + 
+  geom_text(mapping = aes(x = site, 
+                          y = asymp.UCL + 0.1, 
+                          label = .group), 
+            position = position_dodge(0.5)) + 
+  theme(axis.title = element_text(size = 11, 
+                                  colour = &quot;black&quot;),
+        axis.text = element_text(size = 9, 
+                                 colour = &quot;black&quot;), 
+        legend.background = element_blank(), 
+        legend.text = element_text(size = 10, 
+                                   colour = &quot;black&quot;), 
+        legend.title = element_text(size = 11, 
+                                    colour = &quot;black&quot;)) + 
+  labs(x = &quot;Site distance from apiary&quot;, 
+       y = &quot;Proportion of visis from social bees&quot;) + 
+  scale_x_discrete(labels = c(&quot;&lt; 5km&quot;, 
+                              &quot;5km &lt; x &lt; 10km&quot;, 
+                              &quot;10km &lt;&quot;))</code></pre>
+<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>This plot is very impressive. Have a look at the errorbars - they are asymmetrical, bound between zero and 1. If you had to run this in SPSS you would have proportions that cross over into the negative and that’s impossible. And that’s about all there is to it for a basic introduction to GLMs in R. I hope that was helpful.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

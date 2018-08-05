@@ -1,0 +1,302 @@
+---
+title: "Statistics in R"
+author: "Stuart Demmer"
+date: "03 August 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cowplot)
+library(emmeans)
+library(broom)
+library(car)
+Salaries
+sunflower <- read_csv("sunflower1.csv")
+```
+
+# Introduction
+Welcome back! I hope you are ready for the real meat of our course - the beginnings of putting all of what we have been learining into practice. But in order to understand what we are going to be doing here we need to have a quick recap of basic statistics. In their simplest definition many univariate parametric statistical tests (those are things like t-test, ANOVA, GLM, GLMM) are testing for whether the means from two or more treatments are stastically different. They do this by calculating the proportion of either treatment's distribution that overlaps with the other treatment's distribution. If that proportion is sufficiently low (say around 5%) then we reject the null hypothesis (the distributions overlap one another too much and so we cannot say with sufficient surity that the means are really different). Otherwise if there is more that around 5% overlap we can't reject the null hypothesis and so the means are not different.
+Right so let's start at the beginning.  
+
+## T-test
+There are several different kinds of t-tests. I'm not going to go through them all here, they all work in a similar manner. For now we will just go with the independent samples t-test. This tests for whether the difference between the two treatment means is different from zero. If it is then the means are not the same. Let's pull up some data:
+```{r}
+sleep
+```
+
+This data shows the response of students to a sleeping drug. Extra shows the change in hours slept, group shows the treatment that they were given, and ID is the participant number. Technically this is a paired sample but we will ignore that for now. Let's plot the density distributions and boxplots of the two groups of students:
+```{r}
+sleep.dens <- ggplot(data = sleep, aes(x = extra, colour = group)) + 
+  geom_density()
+sleep.box <- ggplot(data = sleep, aes(x = group, y = extra)) + 
+  geom_boxplot()
+plot_grid(sleep.dens, sleep.box, labels = "AUTO")
+```
+
+So group two definitely seems to gain around an hour and a half or so more hours of sleep. But this is just visual data analysis - not very statistical... 
+
+To test this we can call up `t.test()`. type `?t.test` to pull up the help file. There are two methods that we can use to enter our data into the arguments of this function - the one I find the most useful is the `## S3 method for class 'formula'`. This is a pretty universal way that many statistical functions require their arguments to be inputted:
+
+*`test.name()` - the name of the formula to carry out the required statistical calculation.
+*`formula` - the formula that the distributions follow. The response variable (the y value, what we measured) goes on the left. The factors which describe the response variable's distribution go on the right. These two sides are sepparated by a `~`.
+*`data` - where the data can be found.
+
+That's it. There are other arguments that are specific to the kind of test that can also be included in these functions. We can play around with these in a moment but for now let's run the test:
+```{r}
+sleepTtest <- t.test(extra ~ group, data = sleep)
+sleepTtest
+```
+
+That is a pretty neat output. Note what I did there - I saved the test as a variable called `sleepTtest` (I could have called it anything) and then I called that variable. As soon as I run both those lines my output is printed out. The great thing about doing it this way is that once I have saved my output it is saved - I don't have to sift through pages of SPSS output printouts looking for the test I want anymore. If I want to know what the details of the test were then I can just call `sleepTtest` again and I'll have my answer.
+
+Our output here showed that the mean difference was not significant at the 5% level. But looking at the `ID` field we can see that these are the same subjects and so the test is actually a paired samples test. To incorporate this new bit of information into our test we can go:
+```{r}
+sleepTtest <- t.test(extra ~ group, data = sleep, paired = TRUE)
+sleepTtest
+```
+
+And there you have it - this sleeping pill significantly improves the students' sleeping time by giving them an extra 1.58 hours of sleep! Pretty neat hey.
+But in the life sciences we seldom do tests involving only two treatments and so analysis of variance is probably more relevant to us. The method is similar.
+
+## Analysis of variance 
+### `aov()`
+The dataset we will use here is called `npk`. Peas were fertilised with combinations of nitrogen, phosphorus, and potassium using a factorial disign:
+```{r}
+npk
+```
+
+So we have three treatment variables with one blocking variable. Pretty standard agricultural or greenhouse experiment. To test for whether the means of the different treatments are present we would follow a similar proceedure. We will use `aov()` to conduct the analysis and then in order to produce the output analysis of variance table we will use `anova()`. The three most reasonable ways we could carry out this analysis are:
+```{r}
+## the most basic model. Fertilisation as main effects. No blocking or interactions incorporated.
+npkAov <- aov(yield ~ N + P + K, data = npk)
+
+## blocking has now been included.
+npkAov <- aov(yield ~ N + P + K + block, data = npk)
+
+## both interactions and blocking have been incorporated into our model
+npkAov <- aov(yield ~ N*P*K + block, data = npk)
+```
+
+### `anova()`
+Having done that we need to call a separate function to produce our analysis of variance table. `anova()` produces anova tables for `aov()`, `lm()` (linear models), and `glm()`. To get the output all we need to do is:
+```{r, echo = 2}
+npkAov <- aov(yield ~ block + N*P*K, data = npk)
+anova(npkAov)
+```
+
+That's a pretty neat little output. But copying it into our document isn't as easy as you might think. This output is only text - to put it into a tabular form we need to tidy it up using `tidy()` from the `broom` package. Install `broom` now, load it from the library and then go:
+```{r}
+tidyNPKAnova <- tidy(anova(npkAov))
+View(tidyNPKAnova)
+```
+
+That's now saved your anova into a neat little table which you can copy into Excel to format the lines. This is the simplest way that I know about how to make tables but there are whole packages specifically dedicated to producing publication quality tables from within R. The way you copy these tables into Excel is that you scroll down to the bottom right corner of the table, click in there and then drag up to the top left. Then copy and paste into Excel - there are better ways but this is quick and nasty.  
+
+### _post hoc_-ing with `emmeans`
+Okay, now how do we see the results of this analysis of variance graphically? Can we carry out _post hoc_ tests? To be honest this dataset isn't the greatest for doing that. I chose it because it has lost of variables and it can easily show you how to incorporate multiple variables into the `formula` argument. To look at _post hoc_ comparrisons we will run a new test on the `iris` dataset. This contains flower morphology measurements from three species of iris:
+```{r}
+head(iris)
+
+```
+
+Let's see if there is a difference in `Sepal.Width` across the three species:
+```{r}
+ggplot(iris) + 
+  geom_density(aes(x = Sepal.Width, colour = Species))
+irisAov <- aov(Sepal.Width ~ Species, data = iris)
+anova(irisAov)
+```
+
+Ahh - an extremely significant result. It seems likely that versicolor and verginica are somewhat similar but that setosa has much wider sepals. We can extract the means for each species with (what I think is a fantastic package) `emmeans`. Install it and load it from your library now. This package is incredibly powerful and will be useful when we move on to GLMs in the next section. It extracts the estimated marginal means from the analysis object (`irisAov` in our case) and then presents them on either the analysis scale or the response scale. Let's try it out:
+```{r}
+irisAov <- aov(Sepal.Width ~ Species, data = iris)
+irisEmm <- emmeans(irisAov, ~ Species)
+irisEmm
+```
+
+This is the most basic output but already it is very neat and very powerful. We can do better though. If we want the pairwise contrasts for each treatment combination then we can go:
+```{r}
+irisAov <- aov(Sepal.Width ~ Species, data = iris)
+irisEmm <- emmeans(irisAov, ~ Species)
+pairs(irisEmm)
+```
+
+Note that `pairs()` automatically incorporates an adjustment to the p-value based on the number of treatments! SPSS would never do this. But if this output isn't easy for you to interpret we can see it graphically:
+```{r}
+irisAov <- aov(Sepal.Width ~ Species, data = iris)
+irisEmm <- emmeans(irisAov, ~ Species)
+## this just plots the means and the confidence intervals
+irisWithout <- plot(irisEmm)
+## this incorporates a red arrow. If the arrows overlap then the means are not different. Verginica and Versicolor are somewhat similar (p = 0.0088) but their arrows do not overlap and so they are regarded as different.
+irisWith <- plot(irisEmm, comparisons = TRUE)
+plot_grid(irisWithout, irisWith, labels = "AUTO")
+```
+
+But wait there is more! You can get this output with number groups. `emmeans` has a function called `cld()` which assigns groups of treatments sharing the same mean the same number:
+```{r}
+irisAov <- aov(Sepal.Width ~ Species, data = iris)
+irisEmm <- emmeans(irisAov, ~ Species)
+irisCld <- cld(irisEmm)
+irisCld
+```
+
+Clearly all species have drastically different sepal widths. This is a fairly nice output but suppose we wanted to plot it with `ggplot2`? How would we do that. Well luckily `cld()` saves the above table as a nice, neat dataframe which we can just dive into with ggplot2:
+```{r}
+irisAov <- aov(Sepal.Width ~ Species, data = iris)
+irisEmm <- emmeans(irisAov, ~ Species)
+irisCld <- cld(irisEmm)
+irisCld
+
+ggplot(data = irisCld) + 
+  geom_pointrange(aes(x = Species, y = emmean, ymin = lower.CL, ymax = upper.CL)) + 
+  geom_text(aes(x = Species, y = upper.CL + 0.075, label = .group))
+```
+
+Pretty simple hey? No more playing around in PowerPoint to get that right. Everything can be done from right in R. And if you want to be a little more specific with how your labels are positioned these figures are entirely editible as you can export them as a .SVG file. Open that up in a free program called [Inkscape](https://inkscape.org/en/) and you can move any point or label around. This will be very useful later when we produce some multivariate figures with lots of species and environmental variable labels. So that is the basics of anova in R. But anovas are not the most reliable statistical tool for testing whether the means of treatments are different. The reason for this is that anova contains many [assuptions](https://stats.stackexchange.com/questions/6350/anova-assumption-normality-normal-distribution-of-residuals). This means that if we want to ensure our data meet this seemingly endless list of assumptions then we need to drastically transform our data - something which is challenging to do in itself and then you are left with results based on transformed data which your reader probably can't understand very well. That's where GLMs (generalised linear models) come into the picture. You'll never use t-tests or anovas again!
+
+## Generalised linear models
+### `glm()`
+The main constraint with our data is the distribution that it follows. If you've noticed before almost every test that we have carried out I have produced a density plot to show how the raw data are distributed. This is a very important thing to do because the underlying distribution dictates how you should carry out your analysis. On top of that the kind of data you've collected further details your analysis techniques.
+
+`glm()` is is the function that we use to give more detailed descriptions of how we want our data to be analysed. It constains similar arguments to our previous functions (`formula` and `data`) but it adds another key argument (`family`). This argument allows you to tell `glm()` what kind of distribution it should use to analyse your data. Type `?family` to get a quick run down of the different families that are available. In some extreme cases your data might not align towards any of those families (such as when you have lots of zeros on a continuous positive scale). If that happens there are packages that you can load which allow you to modify your distributions to handle this difficult kind of data.
+GLMs allow you to accurately model:  
+
+* normally distributed data - very rare actually, gaussian distribution (if we run a GLM with a gaussian distribution we will basically get an anova).  
+* proportional data - anything that is bound between zero and one,germination proportion, seed set, time spent doing a particular activity,  binomial distribution.  
+* count data - integers greater than one, number of animals spotted, number of plants in a community, poisson distribution.
+* continuous data - the most common, length of leaves, biomass weights, gamma distribution.  
+
+Each distribution family has something called a link function associated with it. This is a transformation method that is used to take your untransformed data and fit it to the distribution that you have chosen. These are normally matched to your family but you can modify them should you wish to. Generally we can keep this at the standard setting. 
+
+####`Gamma()` family
+To carry out our analyses here we are going to need to access some data contained within another package. Please download `car`. Load this package and the `carData` package. The datasets that we will use here are contained within the latter package. Type `View(carData::Salaries)` to pull up and expect the dataset. Type `?carData::Salaries` to pull up the dataset's help file.
+```{r}
+sal.rank <- ggplot(data = Salaries) + 
+  geom_density(mapping = aes(x = salary, colour = rank))
+sal.disc <- ggplot(data = Salaries) + 
+  geom_density(mapping = aes(x = salary, colour = discipline))
+sal.sex <- ggplot(data = Salaries) + 
+  geom_density(mapping = aes(x = salary, colour = sex))
+plot_grid(sal.rank, sal.disc, sal.sex, labels = "AUTO")
+```
+
+Not quite a normal distribution. These data follow a gamma distribution. There are a couple of other variables in this dataset but for now we will just stick with categorical factors. We'll compare the analysis of these three factors on a normal and gamma distribution:
+```{r}
+salariesGLMgaus <- glm(salary ~ rank*discipline*sex, data = Salaries, family = gaussian())
+salariesGLMgamma <- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+print("Gaussian model AIC: ")
+print(salariesGLMgaus$aic)
+print("Gamma model AIC: ")
+print(salariesGLMgamma$aic)
+```
+
+We've just saved the GLM calls into two different object names. We've then looked into those objects and then called up the AIC value. This stands for the "An Information Criterion". This is a mesurement of how well the data fit the model we have chosen - the lower the number the better the fit so choosing the `Gamma()` family is the better option. The number is on an arbitrary scale.  
+Now that we've called up `cars` (the package name stands for "Companion to Applied Regression") we can use its `Anova()` function instead of the basic `anova()`:
+```{r}
+salariesGLMgamma <- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+Anova(salariesGLMgamma)
+```
+
+We can also use `anova()` but then we would also have to tell the function what test to run. If we don't then it won't compute the test statistic and _p-value_.
+```{r}
+salariesGLMgamma <- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+anova(salariesGLMgamma)
+anova(salariesGLMgamma, test = "Chisq")
+```
+
+So now that we have our anova table we can see that both rank and discipline but not sex affect the salaries of professors at one United States university. But there is also an interaction effect between rank and discipline. The effect of rank is not consistant across disciplnes. Let's have a closer look at this using emmeans:
+```{r}
+salariesGLMgamma <- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+plot(emmeans(salariesGLMgamma, ~rank), comparisons = TRUE)
+plot(emmeans(salariesGLMgamma, ~discipline), comparisons = TRUE)
+plot(emmeans(salariesGLMgamma, ~rank*discipline), comparisons = TRUE)
+```
+
+And now lets plot the interaction with groupings in ggplot:
+```{r}
+salariesGLMgamma <- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
+rankDiscCld <- cld(emmeans(salariesGLMgamma, ~rank*discipline, type = "response"))
+ggplot(rankDiscCld) + 
+  geom_pointrange(mapping = aes(x = rank, y = response, ymin = asymp.LCL, ymax = asymp.UCL, colour = discipline), position = position_dodge(0.5)) + 
+  geom_text(mapping = aes(x = rank, y = asymp.UCL + 6000, group = discipline, label = .group), position = position_dodge(0.5))
+```
+
+With `geom_text()` we need to tell ggplot how to group the different labels - we know that we must go with rank on the x-axis. Then we group by discipline and add a bit of space between the label and the upper confidence interval bar.
+But let's see about making this figure "publication quality":
+```{r}
+salariesGLMgamma <- glm(salary ~ rank*discipline*sex, 
+                        data = Salaries, 
+                        family = Gamma())
+
+rankDiscCld <- cld(emmeans(salariesGLMgamma, 
+                           ~rank*discipline, 
+                           type = "response"))
+
+ggplot(rankDiscCld) + 
+  geom_pointrange(mapping = aes(x = rank, 
+                                y = response, 
+                                ymin = asymp.LCL, 
+                                ymax = asymp.UCL, 
+                                colour = discipline), 
+                  position = position_dodge(0.5)) + 
+  geom_text(mapping = aes(x = rank, 
+                          y = asymp.UCL + 6000, 
+                          group = discipline, 
+                          label = .group), 
+            position = position_dodge(0.5)) + 
+  theme(axis.title = element_text(size = 11, 
+                                  colour = "black"),
+        axis.text = element_text(size = 9, 
+                                 colour = "black"), 
+        legend.background = element_blank(), 
+        legend.text = element_text(size = 10, 
+                                   colour = "black"), 
+        legend.title = element_text(size = 11, 
+                                    colour = "black")) + 
+  labs(x = "Position", 
+       y = "Annual salary ($)", 
+       colour = "Discipline") + 
+  scale_x_discrete(labels = c("Assistant prof", 
+                              "Associate prof", 
+                              "Full prof"))
+```
+
+`theme()`, `labs()` and `scale_x_discrete()` may scare you at first but there isn't much to them. You can probably get a good idea of what is going on without much explanation - it's mainly just changing text sizes and colours, adding new labels to the x-axis and adding new title to the x and y axes. That's about all there is to taking a GLM from start to finish. 
+
+####`binomial()` family
+
+I will quickly go through some details regarding the binomial distribution because it is a powerful distribution that is probably under-utilised. This distribution describes data which have a 'success/failure' kind of response. The key advantage of this distribution is that the y side of the formula can accept several ways of presenting data. The data can be in the form of proportions (values between zero and one), binary responses (ones or zeros), or successes and failures from which proportions can be calculated (suppose 40 seeds were planted, 28 germinate and 12 do not we would input the successes as 28 and the failures as 12). The last method is the most powerful I think because it incorporates a weighting (40 seeds for that recording) as well as the proportion. Just putting 0.7 in (28/40) does not tell the analysis how many individuals made up that data point. If there are several different numbers of seeds that are planted then the analysis takes those different numbers into consideration. Let's see this in action. We are going to use a dataset which describes the number of visits to sunflowers over five minutes at sites which are at different distances away from an _Apis melifera_ apiry. `visitSoc` describes the number of visits from social bees - _A. melifera_, and `visitSol` describes visits from solitary bees. `site` describes the site's distance from the apiary, and `area` describes the size of the area that the site occupies.
+```{r}
+sunflowerGlm <- glm(cbind(visitSoc, visitSol) ~ site, data = sunflower, family = binomial())
+Anova(sunflowerGlm)
+sunflowerSiteCld <- cld(emmeans(sunflowerGlm, ~site, type = "response"))
+
+ggplot(sunflowerSiteCld) + 
+  geom_pointrange(mapping = aes(x = site, 
+                                y = prob, 
+                                ymin = asymp.LCL, 
+                                ymax = asymp.UCL), 
+                  position = position_dodge(0.5)) + 
+  geom_text(mapping = aes(x = site, 
+                          y = asymp.UCL + 0.1, 
+                          label = .group), 
+            position = position_dodge(0.5)) + 
+  theme(axis.title = element_text(size = 11, 
+                                  colour = "black"),
+        axis.text = element_text(size = 9, 
+                                 colour = "black"), 
+        legend.background = element_blank(), 
+        legend.text = element_text(size = 10, 
+                                   colour = "black"), 
+        legend.title = element_text(size = 11, 
+                                    colour = "black")) + 
+  labs(x = "Site distance from apiary", 
+       y = "Proportion of visis from social bees") + 
+  scale_x_discrete(labels = c("< 5km", 
+                              "5km < x < 10km", 
+                              "10km <"))
+```
+
+This plot is very impressive. Have a look at the errorbars - they are asymmetrical, bound between zero and 1. If you had to run this in SPSS you would have proportions that cross over into the negative and that's impossible. And that's about all there is to it for a basic introduction to GLMs in R. I hope that was helpful.

@@ -1,0 +1,209 @@
+---
+title: "Baby steps"
+author: "Stuart Demmer"
+date: "28 July 2018"
+output: html_document
+---
+# A 'baby steps' introduction to R coding
+## Creating objects in R
+We just learnt about the theoretical differences between the console and scripts and we commanded R to carry out some simple (and not so simple) analyses for us. For a bit of a recap type `3 + 5` into the console. This is cool but has major limitations. If we wanted to add that answer to 10 we would have to repeate the process by going `3 + 5 + 10`. None of what we did was 'stored' anywhere. This is where R becomes even more useful. We can assign _values_ to _objects_. Let's suppose we have two people, one of whom has three apples and another who has five apples. We can then command R to store the sum of all the apples by coding `apples.sum <- 3 + 5`. 
+```{r}
+3 + 5
+3 + 5 + 10
+apples.sum <- 3 + 5
+```
+See how the answer for each command appears directly below it? But what about the last set of commands? Why do we not see 8 anywhere there? That's because all we have told R to do is to store the sum of 3 + 5 in apples.sum. We haven't told R to tell us what apples.sum equals to. But look here:
+```{r}
+apples.sum <- 3 + 5
+apples.sum
+```
+We have told R that `apples.sum`'s value is 3 + 5 and then we have told it to tell us what `apples.sum`'s vlue is! This is cool! Now maybe we know that the person with three apples' name is John (`John <- 3`) and the second person who has five apples' name is Thandeka (`Thandeka <- 5`) we could get the sum of the apples by coding `apples.sum <- John + Thandeka`: 
+```{r}
+John <- 3
+Thandeka <- 5
+apples.sum <- John + Thandeka
+apples.sum
+```
+Neat hey? There is a lot going on here but break it down into its basic algebra and it sohuld become pretty simple to understand. The only really new thing is the `<-` which is called the "assignment operator". Its job is to assign the _values_ on the right into the _object_ on the left. You can type this quickly in RStudio by typing `Alt` + `-` (pushing `Alt` at the same time as the `-` key).
+
+## The difference between objects and variables
+On the surface there is little difference between these two terms. What are commonly called variables in other coding languages are referred to as objects in R. The terms can be used interchangably for most instances in R, however, when dealing with statistical terminology, variables carry the same meaning in R as in general statistics.
+
+Objects can be given almost any name but there are some important guidelines and considerations. The text below is taken from an [R for Data Science](http://r4ds.had.co.nz/workflow-basics.html#whats-in-a-name) section:
+
+>####4.2 What’s in a name?  
+Object names must start with a letter, and can only contain letters, numbers, `_` and `.`. You want your object names to be descriptive, so you’ll need a convention for multiple words. I recommend snake_case where you separate lowercase words with `_`.
+>
+>`i_use_snake_case`  
+>`otherPeopleUseCamelCase`  
+>`some.people.use.periods`  
+>`And_aFew.People_RENOUNCEconvention`  
+>`We’ll come back to code style later, in functions.`  
+>
+>You can inspect an object by typing its name:
+>
+>`x`
+`#> [1] 12`  
+Make another assignment:
+>
+>`this_is_a_really_long_name <- 2.5`
+To inspect this object, try out RStudio’s completion facility: type “this”, press `TAB`, add characters until you have a unique prefix, then press return.
+>
+>Ooops, you made a mistake! `this_is_a_really_long_name` should have value `3.5` not `2.5`. Use another keyboard shortcut to help you fix it. Type “this” then press `Ctrl` + `↑`. That will list all the commands you’ve typed that start those letters. Use the arrow keys to navigate, then press enter to retype the command. Change `2.5` to `3.5` and rerun.
+>
+>Make yet another assignment:
+>
+>`r_rocks <- 2 ^ 3`  
+>Let’s try to inspect it:
+>
+>`r_rock`  
+>`#> Error: object 'r_rock' not found`  
+>`R_rocks`  
+>`#> Error: object 'R_rocks' not found`  
+There’s an implied contract between you and R: it will do the tedious computation for you, but in return, you must be completely precise in your instructions. Typos matter. Case matters.
+
+In general you should note that:
+* Objects cannot start with a number
+* Objects cannot carry the same name as some basic R functions (e.g., `if`, `else`, `for`) and it is best not to use the names of other less fundamental functions (e.g., `c`, `T`, `mean`, `data`, `df`, `weights`).
+* As R is a dynamic language it is best to use nouns for object names and verbs for function names.
+* Be consistant with how you name your variables. There are several _style guides_ available online which dictate how you should format your code and name your objects and functions.
+  * The [tidyverse](http://style.tidyverse.org/) style
+  * The [Jean Fan](http://jef.works/R-style-guide/) style
+  * The [Google](https://google.github.io/styleguide/Rguide.xml) style
+These might all seem overwhelming but it is good practice to adopt one of these and use it consistantly. The most popular one is the tidyverse style. RStudio also has addin capabilities for installing _style checkers_ or _style formatters_ to correct your styling and suggest alternatives.
+
+## Back to coding!
+So we learnt that algebra works in R but that there are some slight differences, especially regarding the value assignment functionality. We can command R to both assign a value to an object and print the object's value by enclosing the command in parentheses `()`
+```{r}
+John <- 3                       # doesn't print anything
+Thandeka <- 5                   # doesn't print anything
+(apples.sum <- John + Thandeka) # but this does!
+     
+```
+Objects can have their values manipulated or overwritten by either applying simple arithmatic to it or by assigning a new value to it:
+```{r}
+apples.sum                        # print current value of apples.sum
+apples.sum * 2                    # compute and print the product of apples.sum and 2
+(apples.sum.2 <- apples.sum * 2)  # compute, store in a new object and print the product of apples.sum and 2
+
+```
+
+## Comments
+Sometimes R code can get pretty confusing to follow (both for you and someone else) and so it's important to describe exactly what you are doing as you do it. That's where comments come into the picture. Comments are text which is stored in your script but do not affect the content. You can use comments to describe the code or you can comment out sections of code within a script that you don't want to run. To do this you can select the body of text and then push `Ctrl` + `Shift` + `c`.
+
+## Functions and their arguments
+Functions are the heart of what makes programming so effective. Functions are essentially scripts which other people (or even yourself) have written which consist of a set of commands which help carry out a particular tast. 'Base R' contains some fundamental functions but more specific functions can be accessed by installing R packages. Functions usually get one or more inputs. These are called _arguments_. If the supplied _arguments_ are correct then the function will generally return a value which can either be displayed immediately or assigned to an object for future reference. Let's look at the `sqrt()` function as an example. Call up the help file for this function by typing `?sqrt` into the console and pushing `Enter`. See how it shows `sqrt(x)` where under the **Arguments** section `x` is `a numeric or complex vector or array`? That basically means that `sqrt()` needs a numeric input:
+```{r}
+sqrt(4) # this works nicely
+#sqrt(a) # this doesn't...
+a <- 4  # make a = 4
+sqrt(a) # this should work now
+```
+`sqrt()` is a fairly simple function in that it only accepts one argument. Many functions can accept (and require you to input) way more than just one argument. A simple one we can look at is `round()`. This rounds decimal places. Typing `args()` lets you see what the arguments for a particular function are. If we type
+```{r}
+args(round)
+```
+we'll see that `round()` accepts `x` and `digits = `. Again, `x` is a numeric vector or array. `digits = ` refers to the number of decimal places you want after the point. You will see that the default value will be defined. That means that you don't need to supply every argument but you can override the default arguments:
+```{r}
+a <- pi                   # a = pi = 3.14159
+round(a)                  # round a off to the default number of digits
+round(a, digits = 3)      # override the default number of digits to display the rounding to three places.
+round(digits = 3, x = a)  # if you want to you can change the order of the arguments. This doesn't affect the function call at all.
+round(a,3)                # if you do not define the argument values the function will default to its supplied order
+round(3,a)                # not explicityly defining the arguments is a bad idea...
+```
+Be sure to correctly define your arguments when dealing with more complicated functions. You can save yourself and the people reading your code a lot of trouble if you do. Each function does, however, have non-optional arguments. These should always be arranged first in the function call and in the correct order. If you do this right then you won't need to specify to which argument each supplied variable or object is to be assigned.
+
+## Vectors and data types
+One of the most common data types in R is the vector. These are objects which are composed of a series of values which can be either numerics, characters, factors, or logicals. Suppose we go out and collect data on the lengths (in centimeters) of leaves for a BIOL 101 prac. We need to collect five measurements from three tree species We can store these data in `length.cm`:
+```{r}
+length.cm <- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+length.cm
+```
+We can then record the name of each tree in a vector in a similar manner:
+```{r}
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3")
+```
+The quotation marks here are essential. They tell R that each value assigned to the vector is a character string. Without these quotations R will assume that `Spp 1`, `Spp 2`, and `Spp 3` are objects. This would throw an error because there are no objects with those names in our R session.
+
+We can get an overview of a vector. `length()` will tell us how long (how many elements) are in the vector:
+```{r}
+length.cm <- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3")
+length(length.cm)
+length(names.tree)
+```
+Vectors must be made up of a series of elements of the same data type. To see the data type of a vector we can call `class()`:
+```{r, echo = c(3, 4)}
+length.cm <- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3")
+class(length.cm)
+class(names.tree)
+```
+When we get to larger data frmaes `str()` will give us the structure of the object:
+```{r, echo = c(3, 4)}
+length.cm <- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3")
+str(length.cm)
+str(names.tree)
+```
+Suppose we collected five more measurements from a fourth species, we could add these data to our vectors as follows:
+```{r, echo = c(3, 4, 5)}
+length.cm <- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3")
+length.cm <- c(length.cm, 22.1, 22.5, 20.3, 25.1, 23.3)
+names.tree <- c(names.tree, "Spp 4", "Spp 4", "Spp 4", "Spp 4", "Spp 4")
+length.cm
+names.tree
+```
+Note how in order to retain the original data contained in the vectors we have to 'reassign' the vector to itself together with the new data. If we didn't the new data would override the original data.
+These are the two fundamental data types in R but there are a few otherse that are important:
+* `"logical"` which store `TRUE` and `FALSE` (boolean) type data
+* `"integer"` which store whole numbers
+Besides vectors there are several other important data structures in  R. These include `list`, `matrix`, `data.frame`, `factor`, and `array`.
+
+### Quiz time
+>   1. Vectors can be of several types but what happens if we mix different types together?
+    <details>
+      <summary>Answer</summary>
+        R will implicitly convert each element to the same data type.
+    </details>
+>   2. Give the data types of each of these vectors: 
+>     ```{r}
+>     num_char <- c(1, 2, 3, "a")
+>     num_logical <- c(1, 2, 3, TRUE)
+>     char_logical <- c("a", "b", "c", TRUE)
+>     tricky <- c(1, 2, 3, "4")
+>     ```
+      <details>
+        <summary>Answer</summary>
+          `character`, `numeric`, `character`, `character`. <br>
+          R does this by trying to find the 'lowest common  denominator' amongst all the elements without loosing any data.
+      </details>
+>
+>   3. You’ve probably noticed that objects of different types get converted into a single, shared type within a vector. In R, we call converting objects from one class into another class coercion. These conversions happen according to a hierarchy, whereby some types get preferentially coerced into other types. Can you draw a diagram that represents the hierarchy of how these data types are coerced?
+    <details>
+      <summary>Answer</summary>
+        logical --> numeric --> character <-- logical
+    </details>
+
+## Subsetting vectors
+We can call a vector's name and it will return the entire contents of the vector:
+```{r, echo = 2}
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3",  "Spp 4", "Spp 4", "Spp 4", "Spp 4", "Spp 4")
+names.tree
+```
+but suppose we only want a few selected values of the vector... We can do this by telling R exactly what we want:
+```{r, echo = c(2,3)}
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3",  "Spp 4", "Spp 4", "Spp 4", "Spp 4", "Spp 4")
+names.tree[2]
+names.tree[c(2, 6, 9)]
+```
+Working with individual vectors is great - but suppose we wanted to put them together in a table form. We can do that quite easily with the `cbind()` function (this basically stands for "column bind"). We would bind the two vectors and then tell R that this combination must be `as.data.frame()`. This converts these two vectors (initially a matrix) into an object that has columns and rows much like an Excel Spreadsheet does:
+```{r, echo = c(3, 4)}
+names.tree <- c("Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 1", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 2", "Spp 3", "Spp 3", "Spp 3", "Spp 3", "Spp 3",  "Spp 4", "Spp 4", "Spp 4", "Spp 4", "Spp 4")
+length.cm <- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5, 22.1, 22.5, 20.3, 25.1, 23.3)
+data.prac <- as.data.frame(cbind(names.tree, length.cm))
+data.prac
+```
+Not too hard hey? Whilst we might not always have to do this kind of work (much of the data we will use in R will likely already be formatted in this manner when we import it into R) the principles described here give a good introduction into the way you need to think in order to code effectively in R. That's all for this section - next we'll move on to "data wrangling" with `dplyr`.
