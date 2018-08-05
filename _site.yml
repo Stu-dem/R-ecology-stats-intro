@@ -2,6 +2,8 @@ name: "my-website"
 navbar:
   title: "My Website"
   left:
+    - text: "RM"
+      href: README.md
     - text: "Home"
       href: index.html
     - text: "Intro"
