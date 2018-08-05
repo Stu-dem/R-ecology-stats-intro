@@ -2,17 +2,15 @@ name: "my-website"
 navbar:
   title: "My Website"
   left:
-    - text: "RM"
-      href: README.md
     - text: "Home"
-      href: index.html
+      href: index.rmd
     - text: "Intro"
-      href: Introduction.html
+      href: Introduction.rmd
     - text: "Baby steps"
-      href: Baby_steps.html
+      href: Baby_steps.rmd
     - text: "Data wrangling"
-      href: Data_wrangling.html
+      href: Data_wrangling.rmd
     - text: "Data vis"
-      href: Data_visualisation.html
+      href: Data_visualisation.rmd
     - text: "Stats intro"
-      href: Statistics_intro.html
+      href: Statistics_intro.rmd
