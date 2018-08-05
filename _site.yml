@@ -3,14 +3,14 @@ navbar:
   title: "My Website"
   left:
     - text: "Home"
-      href: index.rmd
+      href: index.html
     - text: "Intro"
-      href: Introduction.rmd
+      href: Introduction.html
     - text: "Baby steps"
-      href: Baby_steps.rmd
+      href: Baby_steps.html
     - text: "Data wrangling"
-      href: Data_wrangling.rmd
+      href: Data_wrangling.html
     - text: "Data vis"
-      href: Data_visualisation.rmd
+      href: Data_visualisation.html
     - text: "Stats intro"
-      href: Statistics_intro.rmd
+      href: Statistics_intro.html
