@@ -1,9 +1,7 @@
 name: "my-website"
 navbar:
-  title: "My Website"
+  title: "R Statistics for ecology"
   left:
-    - text: "Home"
-      href: index.html
     - text: "Intro"
       href: Introduction.html
     - text: "Baby steps"
