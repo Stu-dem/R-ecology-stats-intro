@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1584345734760.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2651072202",
+    "id" : "A3753F93",
+    "lastKnownWriteTime" : 1584345907,
+    "last_content_update" : 1584345907564,
+    "path" : "~/GitHub desktop/SAEON-GSN-R-ecology-intro/Statistics intro.Rmd",
+    "project_path" : "Statistics intro.Rmd",
+    "properties" : {
+        "cursorPosition" : "27,0",
+        "last_setup_crc32" : "DF50F35C77260893",
+        "scrollLine" : "24"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

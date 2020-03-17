@@ -1,0 +1,14 @@
+"0","sunflower <- read_csv(""sunflower1.csv"")"
+"2","Parsed with column specification:
+cols(
+  study = [31mcol_character()[39m,
+  site = [31mcol_character()[39m,
+  area = [32mcol_double()[39m,
+  distance = [32mcol_double()[39m,
+  seedSet = [32mcol_double()[39m,
+  richSoc = [32mcol_double()[39m,
+  richSol = [32mcol_double()[39m,
+  visitSoc = [32mcol_double()[39m,
+  visitSol = [32mcol_double()[39m
+)
+"

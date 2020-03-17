@@ -1,9 +1,77 @@
----
-layout: default
-theme: jekyll-theme-cayman
----
+<!DOCTYPE html>
 
-<body>
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Stuart Demmer" />
+
+<meta name="date" content="2018-08-03" />
+
+<title>Statistics in R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
 
 <style type = "text/css">
 .main-container {
@@ -17,7 +85,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -27,6 +94,9 @@ img {
 }
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -42,7 +112,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -62,6 +131,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -83,19 +189,74 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -108,14 +269,11 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
+      <a class="navbar-brand" href="index.html">R Statistics for ecology</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
   <a href="Introduction.html">Intro</a>
 </li>
 <li>
@@ -143,8 +301,8 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Statistics in R</h1>
-<h4 class="author"><em>Stuart Demmer</em></h4>
-<h4 class="date"><em>03 August 2018</em></h4>
+<h4 class="author">Stuart Demmer</h4>
+<h4 class="date">03 August 2018</h4>
 
 </div>
 
@@ -183,7 +341,7 @@ $(document).ready(function () {
 sleep.box &lt;- ggplot(data = sleep, aes(x = group, y = extra)) + 
   geom_boxplot()
 plot_grid(sleep.dens, sleep.box, labels = &quot;AUTO&quot;)</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>So group two definitely seems to gain around an hour and a half or so more hours of sleep. But this is just visual data analysis - not very statistical…</p>
 <p>To test this we can call up <code>t.test()</code>. type <code>?t.test</code> to pull up the help file. There are two methods that we can use to enter our data into the arguments of this function - the one I find the most useful is the <code>## S3 method for class 'formula'</code>. This is a pretty universal way that many statistical functions require their arguments to be inputted:</p>
 <p><em><code>test.name()</code> - the name of the formula to carry out the required statistical calculation. </em><code>formula</code> - the formula that the distributions follow. The response variable (the y value, what we measured) goes on the left. The factors which describe the response variable’s distribution go on the right. These two sides are sepparated by a <code>~</code>. *<code>data</code> - where the data can be found.</p>
@@ -296,7 +454,7 @@ View(tidyNPKAnova)</code></pre>
 <p>Let’s see if there is a difference in <code>Sepal.Width</code> across the three species:</p>
 <pre class="r"><code>ggplot(iris) + 
   geom_density(aes(x = Sepal.Width, colour = Species))</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
 anova(irisAov)</code></pre>
 <pre><code>## Analysis of Variance Table
@@ -311,20 +469,20 @@ anova(irisAov)</code></pre>
 <pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
 irisEmm &lt;- emmeans(irisAov, ~ Species)
 irisEmm</code></pre>
-<pre><code>##  Species    emmean        SE  df lower.CL upper.CL
-##  setosa      3.428 0.0480391 147 3.333064 3.522936
-##  versicolor  2.770 0.0480391 147 2.675064 2.864936
-##  virginica   2.974 0.0480391 147 2.879064 3.068936
+<pre><code>##  Species    emmean    SE  df lower.CL upper.CL
+##  setosa       3.43 0.048 147     3.33     3.52
+##  versicolor   2.77 0.048 147     2.68     2.86
+##  virginica    2.97 0.048 147     2.88     3.07
 ## 
 ## Confidence level used: 0.95</code></pre>
 <p>This is the most basic output but already it is very neat and very powerful. We can do better though. If we want the pairwise contrasts for each treatment combination then we can go:</p>
 <pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
 irisEmm &lt;- emmeans(irisAov, ~ Species)
 pairs(irisEmm)</code></pre>
-<pre><code>##  contrast               estimate         SE  df t.ratio p.value
-##  setosa - versicolor       0.658 0.06793755 147   9.685  &lt;.0001
-##  setosa - virginica        0.454 0.06793755 147   6.683  &lt;.0001
-##  versicolor - virginica   -0.204 0.06793755 147  -3.003  0.0088
+<pre><code>##  contrast               estimate     SE  df t.ratio p.value
+##  setosa - versicolor       0.658 0.0679 147  9.685  &lt;.0001 
+##  setosa - virginica        0.454 0.0679 147  6.683  &lt;.0001 
+##  versicolor - virginica   -0.204 0.0679 147 -3.003  0.0088 
 ## 
 ## P value adjustment: tukey method for comparing a family of 3 estimates</code></pre>
 <p>Note that <code>pairs()</code> automatically incorporates an adjustment to the p-value based on the number of treatments! SPSS would never do this. But if this output isn’t easy for you to interpret we can see it graphically:</p>
@@ -335,29 +493,33 @@ irisWithout &lt;- plot(irisEmm)
 ## this incorporates a red arrow. If the arrows overlap then the means are not different. Verginica and Versicolor are somewhat similar (p = 0.0088) but their arrows do not overlap and so they are regarded as different.
 irisWith &lt;- plot(irisEmm, comparisons = TRUE)
 plot_grid(irisWithout, irisWith, labels = &quot;AUTO&quot;)</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>But wait there is more! You can get this output with number groups. <code>emmeans</code> has a function called <code>cld()</code> which assigns groups of treatments sharing the same mean the same number:</p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>But wait there is more! You can get this output with number groups. <code>emmeans</code> has a function called <code>CLD()</code> which assigns groups of treatments sharing the same mean the same number:</p>
 <pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
 irisEmm &lt;- emmeans(irisAov, ~ Species)
-irisCld &lt;- cld(irisEmm)
-irisCld</code></pre>
-<pre><code>##  Species    emmean        SE  df lower.CL upper.CL .group
-##  versicolor  2.770 0.0480391 147 2.675064 2.864936  1    
-##  virginica   2.974 0.0480391 147 2.879064 3.068936   2   
-##  setosa      3.428 0.0480391 147 3.333064 3.522936    3  
+irisCld &lt;- CLD(irisEmm)</code></pre>
+<pre><code>## Warning: &#39;CLD&#39; will be deprecated. Its use is discouraged.
+## See &#39;? CLD&#39; for an explanation. Use &#39;pwpp&#39; or &#39;multcomp::cld&#39; instead.</code></pre>
+<pre class="r"><code>irisCld</code></pre>
+<pre><code>##  Species    emmean    SE  df lower.CL upper.CL .group
+##  versicolor   2.77 0.048 147     2.68     2.86  1    
+##  virginica    2.97 0.048 147     2.88     3.07   2   
+##  setosa       3.43 0.048 147     3.33     3.52    3  
 ## 
 ## Confidence level used: 0.95 
 ## P value adjustment: tukey method for comparing a family of 3 estimates 
 ## significance level used: alpha = 0.05</code></pre>
-<p>Clearly all species have drastically different sepal widths. This is a fairly nice output but suppose we wanted to plot it with <code>ggplot2</code>? How would we do that. Well luckily <code>cld()</code> saves the above table as a nice, neat dataframe which we can just dive into with ggplot2:</p>
+<p>Clearly all species have drastically different sepal widths. This is a fairly nice output but suppose we wanted to plot it with <code>ggplot2</code>? How would we do that. Well luckily <code>CLD()</code> saves the above table as a nice, neat dataframe which we can just dive into with ggplot2:</p>
 <pre class="r"><code>irisAov &lt;- aov(Sepal.Width ~ Species, data = iris)
 irisEmm &lt;- emmeans(irisAov, ~ Species)
-irisCld &lt;- cld(irisEmm)
-irisCld</code></pre>
-<pre><code>##  Species    emmean        SE  df lower.CL upper.CL .group
-##  versicolor  2.770 0.0480391 147 2.675064 2.864936  1    
-##  virginica   2.974 0.0480391 147 2.879064 3.068936   2   
-##  setosa      3.428 0.0480391 147 3.333064 3.522936    3  
+irisCld &lt;- CLD(irisEmm)</code></pre>
+<pre><code>## Warning: &#39;CLD&#39; will be deprecated. Its use is discouraged.
+## See &#39;? CLD&#39; for an explanation. Use &#39;pwpp&#39; or &#39;multcomp::cld&#39; instead.</code></pre>
+<pre class="r"><code>irisCld</code></pre>
+<pre><code>##  Species    emmean    SE  df lower.CL upper.CL .group
+##  versicolor   2.77 0.048 147     2.68     2.86  1    
+##  virginica    2.97 0.048 147     2.88     3.07   2   
+##  setosa       3.43 0.048 147     3.33     3.52    3  
 ## 
 ## Confidence level used: 0.95 
 ## P value adjustment: tukey method for comparing a family of 3 estimates 
@@ -365,7 +527,7 @@ irisCld</code></pre>
 <pre class="r"><code>ggplot(data = irisCld) + 
   geom_pointrange(aes(x = Species, y = emmean, ymin = lower.CL, ymax = upper.CL)) + 
   geom_text(aes(x = Species, y = upper.CL + 0.075, label = .group))</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Pretty simple hey? No more playing around in PowerPoint to get that right. Everything can be done from right in R. And if you want to be a little more specific with how your labels are positioned these figures are entirely editible as you can export them as a .SVG file. Open that up in a free program called <a href="https://inkscape.org/en/">Inkscape</a> and you can move any point or label around. This will be very useful later when we produce some multivariate figures with lots of species and environmental variable labels. So that is the basics of anova in R. But anovas are not the most reliable statistical tool for testing whether the means of treatments are different. The reason for this is that anova contains many <a href="https://stats.stackexchange.com/questions/6350/anova-assumption-normality-normal-distribution-of-residuals">assuptions</a>. This means that if we want to ensure our data meet this seemingly endless list of assumptions then we need to drastically transform our data - something which is challenging to do in itself and then you are left with results based on transformed data which your reader probably can’t understand very well. That’s where GLMs (generalised linear models) come into the picture. You’ll never use t-tests or anovas again!</p>
 </div>
 </div>
@@ -384,9 +546,7 @@ irisCld</code></pre>
 <li>continuous data - the most common, length of leaves, biomass weights, gamma distribution.</li>
 </ul>
 <p>Each distribution family has something called a link function associated with it. This is a transformation method that is used to take your untransformed data and fit it to the distribution that you have chosen. These are normally matched to your family but you can modify them should you wish to. Generally we can keep this at the standard setting.</p>
-<div id="gamma-family" class="section level4">
-<h4><code>Gamma()</code> family</h4>
-<p>To carry out our analyses here we are going to need to access some data contained within another package. Please download <code>car</code>. Load this package and the <code>carData</code> package. The datasets that we will use here are contained within the latter package. Type <code>View(carData::Salaries)</code> to pull up and expect the dataset. Type <code>?carData::Salaries</code> to pull up the dataset’s help file.</p>
+<p>####<code>Gamma()</code> family To carry out our analyses here we are going to need to access some data contained within another package. Please download <code>car</code>. Load this package and the <code>carData</code> package. The datasets that we will use here are contained within the latter package. Type <code>View(carData::Salaries)</code> to pull up and expect the dataset. Type <code>?carData::Salaries</code> to pull up the dataset’s help file.</p>
 <pre class="r"><code>sal.rank &lt;- ggplot(data = Salaries) + 
   geom_density(mapping = aes(x = salary, colour = rank))
 sal.disc &lt;- ggplot(data = Salaries) + 
@@ -394,7 +554,7 @@ sal.disc &lt;- ggplot(data = Salaries) +
 sal.sex &lt;- ggplot(data = Salaries) + 
   geom_density(mapping = aes(x = salary, colour = sex))
 plot_grid(sal.rank, sal.disc, sal.sex, labels = &quot;AUTO&quot;)</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>Not quite a normal distribution. These data follow a gamma distribution. There are a couple of other variables in this dataset but for now we will just stick with categorical factors. We’ll compare the analysis of these three factors on a normal and gamma distribution:</p>
 <pre class="r"><code>salariesGLMgaus &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = gaussian())
 salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
@@ -469,30 +629,39 @@ anova(salariesGLMgamma)</code></pre>
 <pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
 plot(emmeans(salariesGLMgamma, ~rank), comparisons = TRUE)</code></pre>
 <pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre><code>## Use &#39;contrast(regrid(object), ...)&#39; to obtain contrasts on the response scale</code></pre>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <pre class="r"><code>plot(emmeans(salariesGLMgamma, ~discipline), comparisons = TRUE)</code></pre>
-<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions
+## Use &#39;contrast(regrid(object), ...)&#39; to obtain contrasts on the response scale</code></pre>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
 <pre class="r"><code>plot(emmeans(salariesGLMgamma, ~rank*discipline), comparisons = TRUE)</code></pre>
-<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-20-3.png" width="672" /></p>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions
+## Use &#39;contrast(regrid(object), ...)&#39; to obtain contrasts on the response scale</code></pre>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-20-3.png" width="672" /></p>
 <p>And now lets plot the interaction with groupings in ggplot:</p>
 <pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, data = Salaries, family = Gamma())
-rankDiscCld &lt;- cld(emmeans(salariesGLMgamma, ~rank*discipline, type = &quot;response&quot;))</code></pre>
+rankDiscCld &lt;- CLD(emmeans(salariesGLMgamma, ~rank*discipline, type = &quot;response&quot;))</code></pre>
+<pre><code>## Warning: &#39;CLD&#39; will be deprecated. Its use is discouraged.
+## See &#39;? CLD&#39; for an explanation. Use &#39;pwpp&#39; or &#39;multcomp::cld&#39; instead.</code></pre>
 <pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## Use &#39;contrast(regrid(object), ...)&#39; to obtain contrasts on the response scale</code></pre>
 <pre class="r"><code>ggplot(rankDiscCld) + 
   geom_pointrange(mapping = aes(x = rank, y = response, ymin = asymp.LCL, ymax = asymp.UCL, colour = discipline), position = position_dodge(0.5)) + 
   geom_text(mapping = aes(x = rank, y = asymp.UCL + 6000, group = discipline, label = .group), position = position_dodge(0.5))</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>With <code>geom_text()</code> we need to tell ggplot how to group the different labels - we know that we must go with rank on the x-axis. Then we group by discipline and add a bit of space between the label and the upper confidence interval bar. But let’s see about making this figure “publication quality”:</p>
 <pre class="r"><code>salariesGLMgamma &lt;- glm(salary ~ rank*discipline*sex, 
                         data = Salaries, 
                         family = Gamma())
 
-rankDiscCld &lt;- cld(emmeans(salariesGLMgamma, 
+rankDiscCld &lt;- CLD(emmeans(salariesGLMgamma, 
                            ~rank*discipline, 
                            type = &quot;response&quot;))</code></pre>
+<pre><code>## Warning: &#39;CLD&#39; will be deprecated. Its use is discouraged.
+## See &#39;? CLD&#39; for an explanation. Use &#39;pwpp&#39; or &#39;multcomp::cld&#39; instead.</code></pre>
 <pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## Use &#39;contrast(regrid(object), ...)&#39; to obtain contrasts on the response scale</code></pre>
 <pre class="r"><code>ggplot(rankDiscCld) + 
   geom_pointrange(mapping = aes(x = rank, 
                                 y = response, 
@@ -520,11 +689,9 @@ rankDiscCld &lt;- cld(emmeans(salariesGLMgamma,
   scale_x_discrete(labels = c(&quot;Assistant prof&quot;, 
                               &quot;Associate prof&quot;, 
                               &quot;Full prof&quot;))</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p><code>theme()</code>, <code>labs()</code> and <code>scale_x_discrete()</code> may scare you at first but there isn’t much to them. You can probably get a good idea of what is going on without much explanation - it’s mainly just changing text sizes and colours, adding new labels to the x-axis and adding new title to the x and y axes. That’s about all there is to taking a GLM from start to finish.</p>
-</div>
-<div id="binomial-family" class="section level4">
-<h4><code>binomial()</code> family</h4>
+<p>####<code>binomial()</code> family</p>
 <p>I will quickly go through some details regarding the binomial distribution because it is a powerful distribution that is probably under-utilised. This distribution describes data which have a ‘success/failure’ kind of response. The key advantage of this distribution is that the y side of the formula can accept several ways of presenting data. The data can be in the form of proportions (values between zero and one), binary responses (ones or zeros), or successes and failures from which proportions can be calculated (suppose 40 seeds were planted, 28 germinate and 12 do not we would input the successes as 28 and the failures as 12). The last method is the most powerful I think because it incorporates a weighting (40 seeds for that recording) as well as the proportion. Just putting 0.7 in (28/40) does not tell the analysis how many individuals made up that data point. If there are several different numbers of seeds that are planted then the analysis takes those different numbers into consideration. Let’s see this in action. We are going to use a dataset which describes the number of visits to sunflowers over five minutes at sites which are at different distances away from an <em>Apis melifera</em> apiry. <code>visitSoc</code> describes the number of visits from social bees - <em>A. melifera</em>, and <code>visitSol</code> describes visits from solitary bees. <code>site</code> describes the site’s distance from the apiary, and <code>area</code> describes the size of the area that the site occupies.</p>
 <pre class="r"><code>sunflowerGlm &lt;- glm(cbind(visitSoc, visitSol) ~ site, data = sunflower, family = binomial())
 Anova(sunflowerGlm)</code></pre>
@@ -535,9 +702,10 @@ Anova(sunflowerGlm)</code></pre>
 ## site   71.787  2  2.581e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>sunflowerSiteCld &lt;- cld(emmeans(sunflowerGlm, ~site, type = &quot;response&quot;))
-
-ggplot(sunflowerSiteCld) + 
+<pre class="r"><code>sunflowerSiteCld &lt;- CLD(emmeans(sunflowerGlm, ~site, type = &quot;response&quot;))</code></pre>
+<pre><code>## Warning: &#39;CLD&#39; will be deprecated. Its use is discouraged.
+## See &#39;? CLD&#39; for an explanation. Use &#39;pwpp&#39; or &#39;multcomp::cld&#39; instead.</code></pre>
+<pre class="r"><code>ggplot(sunflowerSiteCld) + 
   geom_pointrange(mapping = aes(x = site, 
                                 y = prob, 
                                 ymin = asymp.LCL, 
@@ -561,9 +729,8 @@ ggplot(sunflowerSiteCld) +
   scale_x_discrete(labels = c(&quot;&lt; 5km&quot;, 
                               &quot;5km &lt; x &lt; 10km&quot;, 
                               &quot;10km &lt;&quot;))</code></pre>
-<p><img src="Statistics_intro_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p><img src="Statistics-intro_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>This plot is very impressive. Have a look at the errorbars - they are asymmetrical, bound between zero and 1. If you had to run this in SPSS you would have proportions that cross over into the negative and that’s impossible. And that’s about all there is to it for a basic introduction to GLMs in R. I hope that was helpful.</p>
-</div>
 </div>
 </div>
 </div>
@@ -586,6 +753,23 @@ $(document).ready(function () {
 
 </script>
 
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
   (function () {
@@ -597,4 +781,4 @@ $(document).ready(function () {
 </script>
 
 </body>
-
+</html>

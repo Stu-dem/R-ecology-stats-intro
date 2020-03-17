@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Stuart Demmer" />
@@ -71,9 +71,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -87,7 +85,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -97,6 +94,9 @@ img {
 }
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -112,7 +112,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -132,6 +131,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -153,19 +189,74 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -178,14 +269,11 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
+      <a class="navbar-brand" href="index.html">R Statistics for ecology</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
   <a href="Introduction.html">Intro</a>
 </li>
 <li>
@@ -213,8 +301,8 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Introduction to R and RStudio</h1>
-<h4 class="author"><em>Stuart Demmer</em></h4>
-<h4 class="date"><em>28 July 2018</em></h4>
+<h4 class="author">Stuart Demmer</h4>
+<h4 class="date">28 July 2018</h4>
 
 </div>
 
@@ -228,30 +316,17 @@ $(document).ready(function () {
 <div id="why-learn-and-use-r" class="section level3">
 <h3>Why learn and use R?</h3>
 <p>Many people have heard rumours that R is difficult and that it’s much easier (and possibly better) to stick with menu driven statistical programmes. But typing out your code has a whole bunch of great benefits for you and the people interested in your work.</p>
-<div id="hardly-any-pointing-and-clicking" class="section level4">
-<h4>1. Hardly any pointing and clicking</h4>
+<p>####1. Hardly any pointing and clicking</p>
 <p>This might make R a little more challenging at the beginning but by learning the method as opposed to a list of menus in order to perform a particular function you will better understand what you are trying to do. It will also challenge you to know what you want to do before you actually do it. Another important aspect here is that because your instructions are written out as code, if you want to re-run an analysis all you need to do is just that, re-run it as opposed to cycling through a bunch of menu options. R code is stored in something called scripts - think of that as a recipe with each step written out. This is similar to cycling through a set of menus in SPSS or something. If you want to change a particular function or if you want to use different data all you need to do is change that part of your code in the script and then run it again and you will be done! Think about the challenges with doing that in SPSS… Writing out scripts causes you to map out your analysis before actually running it in full - you understand all the steps required to achieve a particular outcome because you commanded each step.</p>
-</div>
-<div id="r-is-for-reprocudibility" class="section level4">
-<h4>2. R is for reprocudibility</h4>
+<p>####2. R is for reprocudibility</p>
 <p>I joke - but it could be. One of the fundamental aspects of scientific experiments is that your methods should be reproducible - that includes your statistical analyses (they are described in the methods section for a reason *****). How often have you run something in SPSS and then tried to reproduce the results six months later? Pretty tricky hey? Using scripts in R keeps all your data and functions in one place allowing you to share your analyses with others when needed and rerunning the analyses at the drop of a hat.</p>
-</div>
-<div id="theres-a-package-for-that" class="section level4">
-<h4>3. There’s a package for that</h4>
+<p>####3. There’s a package for that</p>
 <p>Because R is opensource (that means it’s free and anyone can access the underlying code) people from almost every academic discipline are using it and developing “packages” to perform specialised functions which traditional statistical software packages cannot perform or which can only be performed using very expencive software. To give you an idea you can use R for data manipulation (something that takes hours to do in Excel), data visualisation (puts expensive graphing software like Sigma Plot to shame in seconds), multivariate analyses (CANOCO and PRIMER are old news), and GIS (thanks, but no thanks ArcGIS).</p>
-</div>
-<div id="i-cannot-emphasis-rs-graphing-capabilities" class="section level4">
-<h4>4. I cannot emphasis R’s graphing capabilities</h4>
+<p>####4. I cannot emphasis R’s graphing capabilities</p>
 <p>inserg cool graph with code here.</p>
-</div>
-<div id="the-fantastic-fanbase" class="section level4">
-<h4>5. The fantastic fanbase</h4>
+<p>####5. The fantastic fanbase</p>
 <p>The online community actively supporting R and R packages is jsut phenomenal. Just about every error message that R produces can be solved with a quick Google search describing the problem.</p>
-</div>
-</div>
-<div id="installing-r-and-rstudio" class="section level3">
-<h3>Installing R and RStudio</h3>
-<p>Go <a href="https://cran.r-project.org/">here</a> to download the latest version of R.</p>
+<p>###Installing R and RStudio Go <a href="https://cran.r-project.org/">here</a> to download the latest version of R.</p>
 <ol style="list-style-type: decimal">
 <li><p>Select your operating system.</p></li>
 <li><p>Follow the instructions for your operating system.</p></li>
@@ -261,13 +336,8 @@ $(document).ready(function () {
 <li>There is a download option available right there. Click that.</li>
 </ol>
 <p>Install R first and then install RStudio</p>
-</div>
-<div id="rstudio-walkthrough" class="section level3">
-<h3>RStudio walkthrough</h3>
-<p>You can use the basic R console to run your analyses but why drive an Ferrari when you can drive a Tesla? R on its own is incredibly powerful but for no additional cost you can have the very best - RStudio. RStudio integrates all aspects of data input, analysis, and output into one piece of software. RStudio looks like this: <img src="RStudio-Screenshot.png" alt="The RStudio IDE. Panel descriptions clockwise from top left: Scripts and object viewer, Environment/History, Files/Plots/Packages/Help/Viewer, Console" /> Figure 1: The RStudio IDE. Panel descriptions clockwise from top left: Scripts and object viewer, Environment/History, Files/Plots/Packages/Help/Viewer, Console. Each of these panes is incredibly useful - their purposes will become self-evident as soon as you start coding. The RStudio platform provides an all in one software suite to increase your workflow and allow easy code reproducibility. The IDE also contains a code “spellcheck” and “grammarcheck” function and many shorcut keys and autocomplete suggestions to quickly compete simple funcitons.</p>
-</div>
-<div id="your-first-r-project" class="section level3">
-<h3>Your first R project</h3>
+<p>###RStudio walkthrough You can use the basic R console to run your analyses but why drive an Ferrari when you can drive a Tesla? R on its own is incredibly powerful but for no additional cost you can have the very best - RStudio. RStudio integrates all aspects of data input, analysis, and output into one piece of software. RStudio looks like this: <img src="RStudio-Screenshot.png" alt="The RStudio IDE. Panel descriptions clockwise from top left: Scripts and object viewer, Environment/History, Files/Plots/Packages/Help/Viewer, Console" /> Figure 1: The RStudio IDE. Panel descriptions clockwise from top left: Scripts and object viewer, Environment/History, Files/Plots/Packages/Help/Viewer, Console. Each of these panes is incredibly useful - their purposes will become self-evident as soon as you start coding. The RStudio platform provides an all in one software suite to increase your workflow and allow easy code reproducibility. The IDE also contains a code “spellcheck” and “grammarcheck” function and many shorcut keys and autocomplete suggestions to quickly compete simple funcitons.</p>
+<p>###Your first R project</p>
 <p>The RStudio IDE organises your work in a slightly different manner to traditional software packages. At the base of each <em>project</em> is the <em>working directory</em>. This is a universal location containing all information and data relevant to several dependant <em>projects</em>. Think of it like a tree - the <em>working directory</em> is the main trunk and the dependent <em>projects</em> are the branches deviating off of the main trunk. This system makes it easy to move all the information around your computer by keeping it all together. It also allows you to easily share your work with someone else - you just copy the whole directory and pass that on to your collegue.</p>
 <p>Making your first project is a piece of cake using RStudio’s “Projects” interface. RStudio always remembers the location of this working directory and stores a little information file in there to help RStudio to remember what setting you had for that particular directory. To create your first “R Project” follow these quick steps:</p>
 <ol style="list-style-type: decimal">
@@ -280,9 +350,7 @@ The <strong>working directory</strong> would then be entitled “SAEON GSN intro
 <li><p>Click on <code>Create project</code>.</p></li>
 <li><p>Download the code handout and place it in your <strong>working directory</strong>.</p></li>
 </ol>
-</div>
-<div id="the-working-directory" class="section level3">
-<h3>The working directory</h3>
+<p>###The working directory</p>
 <p>The working directory is a key element to each of your projects. Each project should ideally have its own working directory. This is the place where R will be reading and writing files to throughout your analysis. Every file that your project needs should be kept within your working directory and every file should be referred to in relation to the root of the working directory.</p>
 <p>Once your working directory has been created you should then create subdirectories to store the sepparate parts of your project. To do this click on the <code>Files</code> tab in the lower right pane. Then click the <code>New Folder</code> button. For this workshop we will need four folders:</p>
 <ul>
@@ -292,23 +360,14 @@ The <strong>working directory</strong> would then be entitled “SAEON GSN intro
 <li><p><code>scripts</code> to store each of the “recipies” that we would use in our data analysis.</p></li>
 </ul>
 <p>Create these four subfolders now using the method described above. Once you are done your working directory should look like this: Put image here***</p>
-</div>
-<div id="so-how-do-we-speak-to-r" class="section level3">
-<h3>So how do we speak to R?</h3>
-<p>R is a programming language. This means that it responds to instructions we give it. We write or code instructions in the R language - just like how you would speak to a French person in French we speak to R in R. Words in human languages are called commands in programming languages. We can interact with R in two ways - using the console or by using script files. Coding in the console is pretty easy - try typing <code>1+1</code> into the console and press <code>Enter</code> - what happens? This is quite simple - but let’s try something a little more complicated. How about <code>(2+4*87/3)^12</code> - there aren’t many calculators in the world that could compute that - <code>R</code> carries out the calculation in a split second! The console is a great place to play around with <code>R</code> but is no place to stay. Once we close this session of <code>R</code> all the information we’ve typed into the console is lost, we can’t reproduce it anymore. To do that we must move swiftly along and start up our first script! <code>R scripts</code> allow you to type out multiple functions and then run them all at once. These can then be saved for later reference thus providing an indepth record of what you did to others and even your future self!</p>
+<p>###So how do we speak to R? R is a programming language. This means that it responds to instructions we give it. We write or code instructions in the R language - just like how you would speak to a French person in French we speak to R in R. Words in human languages are called commands in programming languages. We can interact with R in two ways - using the console or by using script files. Coding in the console is pretty easy - try typing <code>1+1</code> into the console and press <code>Enter</code> - what happens? This is quite simple - but let’s try something a little more complicated. How about <code>(2+4*87/3)^12</code> - there aren’t many calculators in the world that could compute that - <code>R</code> carries out the calculation in a split second! The console is a great place to play around with <code>R</code> but is no place to stay. Once we close this session of <code>R</code> all the information we’ve typed into the console is lost, we can’t reproduce it anymore. To do that we must move swiftly along and start up our first script! <code>R scripts</code> allow you to type out multiple functions and then run them all at once. These can then be saved for later reference thus providing an indepth record of what you did to others and even your future self!</p>
 <p>RStudio allows you to execute commands directly from the script editor by using the <code>Ctrl</code> + <code>Enter</code> shortcut (on Macs, <code>Cmd</code> + <code>Return</code> will work, too). The command on the current line in the script (indicated by the cursor) or all of the commands in the currently selected text will be sent to the console and executed when you press <code>Ctrl</code> + <code>Enter</code>. You can find other keyboard shortcuts in this [RStudio cheatsheet about the RStudio IDE.](<a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf" class="uri">https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf</a>.</p>
 <p>At some point in your analysis you may want to check the content of a variable or the structure of an object, without necessarily keeping a record of it in your script. You can type these commands and execute them directly in the console. RStudio provides the <code>Ctrl</code> + <code>1</code> and <code>Ctrl</code> + <code>2</code> shortcuts allow you to jump between the script and the console panes.</p>
 <p>If R is ready to accept commands, the R console shows a <code>&gt;</code> prompt. If it receives a command (by typing, copy-pasting or sent from the script editor using <code>Ctrl</code> + <code>Enter</code>), R will try to execute it, and when ready, will show the results and come back with a new <code>&gt;</code> prompt to wait for new commands.</p>
 <p>If R is still waiting for you to enter more data because it isn’t complete yet, the console will show a + prompt. It means that you haven’t finished entering a complete command. This is because you have not ‘closed’ a parenthesis or quotation, i.e. you don’t have the same number of left-parentheses as right-parentheses, or the same number of opening and closing quotation marks. When this happens, and you thought you finished typing your command, click inside the console window and press <code>Esc</code>; this will cancel the incomplete command and return you to the <code>&gt;</code> prompt.</p>
-</div>
-<div id="where-to-find-out-more-later" class="section level3">
-<h3>Where to find out more later?</h3>
-<p>This workshop doesn’t aim to provide an exhaustitive introduction to <code>R</code> but rather to get you familiar with its capabilities and lay the foundations required to get started with some basic data manipulation, analysis and visualisation. What I have found very useful is trying to replicate neat analyses that I have seen other people doing. This then exposes me to new methods and develops my capabilities. It also reminds me how important it is to learn to code. If I want to produce <em>Nature</em> quality figures I need to code.</p>
+<p>###Where to find out more later? This workshop doesn’t aim to provide an exhaustitive introduction to <code>R</code> but rather to get you familiar with its capabilities and lay the foundations required to get started with some basic data manipulation, analysis and visualisation. What I have found very useful is trying to replicate neat analyses that I have seen other people doing. This then exposes me to new methods and develops my capabilities. It also reminds me how important it is to learn to code. If I want to produce <em>Nature</em> quality figures I need to code.</p>
 <p>But we are all likely a long way off from there. The best place to start is to go through some fantastic resources developed by a guy called Hadley Wickham. He is one of the core developers for RStudio and has spearheaded the development of many of the packages we will be using today. He has written a book called <a href="http://r4ds.had.co.nz/">R for Data Science</a> which is absolutely fantastic! Much of what I have learnt started there.</p>
-</div>
-<div id="what-happens-if-i-need-help" class="section level3">
-<h3>What happens if I need help?</h3>
-<p>That is the great thing about <code>R</code>. The community supporting it is open to sharing ideas and helping one another problemsolve. When you get an error message the best thing to do is to copy it into Google and see what is being said about it. Consider including the phrase “R” and the package orr function you are using which produces the error. Great places to look for help are: * Stackoverflow * R bloggers * Crossvalidated * Specific package vigenettes</p>
+<p>###What happens if I need help? That is the great thing about <code>R</code>. The community supporting it is open to sharing ideas and helping one another problemsolve. When you get an error message the best thing to do is to copy it into Google and see what is being said about it. Consider including the phrase “R” and the package orr function you are using which produces the error. Great places to look for help are: * Stackoverflow * R bloggers * Crossvalidated * Specific package vigenettes</p>
 <p><code>R</code> has a fantastic built-in help function. Each package that is loaded on the <code>CRAN</code> repository must include a manual detailing every aspect of the package. These can be confusing to understand at first but you will get the hang of it with time. Each function within the manual contains a description as well as an example of how to use the function.</p>
 <p>From within <code>R</code> you can call up the help files for any function that is contained within your <code>library</code> (the <code>library</code> is a place where all your <code>packages</code> are installed). The function <code>lm()</code> computes a “linear model” for x and y variables. If we didn’t know how it worked we could call up the function by typing <code>?lm</code> into the console. The lower right pane would then display the <code>lm()</code> help file. But let’s say we want to run an analysis of variance but we don’t know what the function is. We can type <code>??analysisofvariance</code> (note that <code>R</code> ignores spaces) into the console and a number of possible topics would be displayed in the lower right pane for us to read. We could then quickly see that the <code>aov()</code> function is what we need to look at to “Fit an Analysis of Variance Model”. Simple hey?</p>
 </div>
@@ -331,6 +390,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

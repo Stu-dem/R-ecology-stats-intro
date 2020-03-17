@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Stuart Demmer" />
+
+<meta name="date" content="2018-07-28" />
+
+<title>Baby steps</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">R Statistics for ecology</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Introduction.html">Intro</a>
+</li>
+<li>
+  <a href="Baby_steps.html">Baby steps</a>
+</li>
+<li>
+  <a href="Data_wrangling.html">Data wrangling</a>
+</li>
+<li>
+  <a href="Data_visualisation.html">Data vis</a>
+</li>
+<li>
+  <a href="Statistics_intro.html">Stats intro</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Baby steps</h1>
+<h4 class="author">Stuart Demmer</h4>
+<h4 class="date">28 July 2018</h4>
+
+</div>
+
+
+<div id="a-baby-steps-introduction-to-r-coding" class="section level1">
+<h1>A ‘baby steps’ introduction to R coding</h1>
+<div id="creating-objects-in-r" class="section level2">
+<h2>Creating objects in R</h2>
+<p>We just learnt about the theoretical differences between the console and scripts and we commanded R to carry out some simple (and not so simple) analyses for us. For a bit of a recap type <code>3 + 5</code> into the console. This is cool but has major limitations. If we wanted to add that answer to 10 we would have to repeate the process by going <code>3 + 5 + 10</code>. None of what we did was ‘stored’ anywhere. This is where R becomes even more useful. We can assign <em>values</em> to <em>objects</em>. Let’s suppose we have two people, one of whom has three apples and another who has five apples. We can then command R to store the sum of all the apples by coding <code>apples.sum &lt;- 3 + 5</code>.</p>
+<pre class="r"><code>3 + 5</code></pre>
+<pre><code>## [1] 8</code></pre>
+<pre class="r"><code>3 + 5 + 10</code></pre>
+<pre><code>## [1] 18</code></pre>
+<pre class="r"><code>apples.sum &lt;- 3 + 5</code></pre>
+<p>See how the answer for each command appears directly below it? But what about the last set of commands? Why do we not see 8 anywhere there? That’s because all we have told R to do is to store the sum of 3 + 5 in apples.sum. We haven’t told R to tell us what apples.sum equals to. But look here:</p>
+<pre class="r"><code>apples.sum &lt;- 3 + 5
+apples.sum</code></pre>
+<pre><code>## [1] 8</code></pre>
+<p>We have told R that <code>apples.sum</code>‘s value is 3 + 5 and then we have told it to tell us what <code>apples.sum</code>’s vlue is! This is cool! Now maybe we know that the person with three apples’ name is John (<code>John &lt;- 3</code>) and the second person who has five apples’ name is Thandeka (<code>Thandeka &lt;- 5</code>) we could get the sum of the apples by coding <code>apples.sum &lt;- John + Thandeka</code>:</p>
+<pre class="r"><code>John &lt;- 3
+Thandeka &lt;- 5
+apples.sum &lt;- John + Thandeka
+apples.sum</code></pre>
+<pre><code>## [1] 8</code></pre>
+<p>Neat hey? There is a lot going on here but break it down into its basic algebra and it sohuld become pretty simple to understand. The only really new thing is the <code>&lt;-</code> which is called the “assignment operator”. Its job is to assign the <em>values</em> on the right into the <em>object</em> on the left. You can type this quickly in RStudio by typing <code>Alt</code> + <code>-</code> (pushing <code>Alt</code> at the same time as the <code>-</code> key).</p>
+</div>
+<div id="the-difference-between-objects-and-variables" class="section level2">
+<h2>The difference between objects and variables</h2>
+<p>On the surface there is little difference between these two terms. What are commonly called variables in other coding languages are referred to as objects in R. The terms can be used interchangably for most instances in R, however, when dealing with statistical terminology, variables carry the same meaning in R as in general statistics.</p>
+<p>Objects can be given almost any name but there are some important guidelines and considerations. The text below is taken from an <a href="http://r4ds.had.co.nz/workflow-basics.html#whats-in-a-name">R for Data Science</a> section:</p>
+<blockquote>
+<p>####4.2 What’s in a name?<br />
+Object names must start with a letter, and can only contain letters, numbers, <code>_</code> and <code>.</code>. You want your object names to be descriptive, so you’ll need a convention for multiple words. I recommend snake_case where you separate lowercase words with <code>_</code>.</p>
+<p><code>i_use_snake_case</code><br />
+<code>otherPeopleUseCamelCase</code><br />
+<code>some.people.use.periods</code><br />
+<code>And_aFew.People_RENOUNCEconvention</code><br />
+<code>We’ll come back to code style later, in functions.</code></p>
+<p>You can inspect an object by typing its name:</p>
+<p><code>x</code> <code>#&gt; [1] 12</code><br />
+Make another assignment:</p>
+<p><code>this_is_a_really_long_name &lt;- 2.5</code> To inspect this object, try out RStudio’s completion facility: type “this”, press <code>TAB</code>, add characters until you have a unique prefix, then press return.</p>
+<p>Ooops, you made a mistake! <code>this_is_a_really_long_name</code> should have value <code>3.5</code> not <code>2.5</code>. Use another keyboard shortcut to help you fix it. Type “this” then press <code>Ctrl</code> + <code>↑</code>. That will list all the commands you’ve typed that start those letters. Use the arrow keys to navigate, then press enter to retype the command. Change <code>2.5</code> to <code>3.5</code> and rerun.</p>
+<p>Make yet another assignment:</p>
+<p><code>r_rocks &lt;- 2 ^ 3</code><br />
+Let’s try to inspect it:</p>
+<p><code>r_rock</code><br />
+<code>#&gt; Error: object 'r_rock' not found</code><br />
+<code>R_rocks</code><br />
+<code>#&gt; Error: object 'R_rocks' not found</code><br />
+There’s an implied contract between you and R: it will do the tedious computation for you, but in return, you must be completely precise in your instructions. Typos matter. Case matters.</p>
+</blockquote>
+<p>In general you should note that: * Objects cannot start with a number * Objects cannot carry the same name as some basic R functions (e.g., <code>if</code>, <code>else</code>, <code>for</code>) and it is best not to use the names of other less fundamental functions (e.g., <code>c</code>, <code>T</code>, <code>mean</code>, <code>data</code>, <code>df</code>, <code>weights</code>). * As R is a dynamic language it is best to use nouns for object names and verbs for function names. * Be consistant with how you name your variables. There are several <em>style guides</em> available online which dictate how you should format your code and name your objects and functions. * The <a href="http://style.tidyverse.org/">tidyverse</a> style * The <a href="http://jef.works/R-style-guide/">Jean Fan</a> style * The <a href="https://google.github.io/styleguide/Rguide.xml">Google</a> style These might all seem overwhelming but it is good practice to adopt one of these and use it consistantly. The most popular one is the tidyverse style. RStudio also has addin capabilities for installing <em>style checkers</em> or <em>style formatters</em> to correct your styling and suggest alternatives.</p>
+</div>
+<div id="back-to-coding" class="section level2">
+<h2>Back to coding!</h2>
+<p>So we learnt that algebra works in R but that there are some slight differences, especially regarding the value assignment functionality. We can command R to both assign a value to an object and print the object’s value by enclosing the command in parentheses <code>()</code></p>
+<pre class="r"><code>John &lt;- 3                       # doesn&#39;t print anything
+Thandeka &lt;- 5                   # doesn&#39;t print anything
+(apples.sum &lt;- John + Thandeka) # but this does!</code></pre>
+<pre><code>## [1] 8</code></pre>
+<p>Objects can have their values manipulated or overwritten by either applying simple arithmatic to it or by assigning a new value to it:</p>
+<pre class="r"><code>apples.sum                        # print current value of apples.sum</code></pre>
+<pre><code>## [1] 8</code></pre>
+<pre class="r"><code>apples.sum * 2                    # compute and print the product of apples.sum and 2</code></pre>
+<pre><code>## [1] 16</code></pre>
+<pre class="r"><code>(apples.sum.2 &lt;- apples.sum * 2)  # compute, store in a new object and print the product of apples.sum and 2</code></pre>
+<pre><code>## [1] 16</code></pre>
+</div>
+<div id="comments" class="section level2">
+<h2>Comments</h2>
+<p>Sometimes R code can get pretty confusing to follow (both for you and someone else) and so it’s important to describe exactly what you are doing as you do it. That’s where comments come into the picture. Comments are text which is stored in your script but do not affect the content. You can use comments to describe the code or you can comment out sections of code within a script that you don’t want to run. To do this you can select the body of text and then push <code>Ctrl</code> + <code>Shift</code> + <code>c</code>.</p>
+</div>
+<div id="functions-and-their-arguments" class="section level2">
+<h2>Functions and their arguments</h2>
+<p>Functions are the heart of what makes programming so effective. Functions are essentially scripts which other people (or even yourself) have written which consist of a set of commands which help carry out a particular tast. ‘Base R’ contains some fundamental functions but more specific functions can be accessed by installing R packages. Functions usually get one or more inputs. These are called <em>arguments</em>. If the supplied <em>arguments</em> are correct then the function will generally return a value which can either be displayed immediately or assigned to an object for future reference. Let’s look at the <code>sqrt()</code> function as an example. Call up the help file for this function by typing <code>?sqrt</code> into the console and pushing <code>Enter</code>. See how it shows <code>sqrt(x)</code> where under the <strong>Arguments</strong> section <code>x</code> is <code>a numeric or complex vector or array</code>? That basically means that <code>sqrt()</code> needs a numeric input:</p>
+<pre class="r"><code>sqrt(4) # this works nicely</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>#sqrt(a) # this doesn&#39;t...
+a &lt;- 4  # make a = 4
+sqrt(a) # this should work now</code></pre>
+<pre><code>## [1] 2</code></pre>
+<p><code>sqrt()</code> is a fairly simple function in that it only accepts one argument. Many functions can accept (and require you to input) way more than just one argument. A simple one we can look at is <code>round()</code>. This rounds decimal places. Typing <code>args()</code> lets you see what the arguments for a particular function are. If we type</p>
+<pre class="r"><code>args(round)</code></pre>
+<pre><code>## function (x, digits = 0) 
+## NULL</code></pre>
+<p>we’ll see that <code>round()</code> accepts <code>x</code> and <code>digits =</code>. Again, <code>x</code> is a numeric vector or array. <code>digits =</code> refers to the number of decimal places you want after the point. You will see that the default value will be defined. That means that you don’t need to supply every argument but you can override the default arguments:</p>
+<pre class="r"><code>a &lt;- pi                   # a = pi = 3.14159
+round(a)                  # round a off to the default number of digits</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>round(a, digits = 3)      # override the default number of digits to display the rounding to three places.</code></pre>
+<pre><code>## [1] 3.142</code></pre>
+<pre class="r"><code>round(digits = 3, x = a)  # if you want to you can change the order of the arguments. This doesn&#39;t affect the function call at all.</code></pre>
+<pre><code>## [1] 3.142</code></pre>
+<pre class="r"><code>round(a,3)                # if you do not define the argument values the function will default to its supplied order</code></pre>
+<pre><code>## [1] 3.142</code></pre>
+<pre class="r"><code>round(3,a)                # not explicityly defining the arguments is a bad idea...</code></pre>
+<pre><code>## [1] 3</code></pre>
+<p>Be sure to correctly define your arguments when dealing with more complicated functions. You can save yourself and the people reading your code a lot of trouble if you do. Each function does, however, have non-optional arguments. These should always be arranged first in the function call and in the correct order. If you do this right then you won’t need to specify to which argument each supplied variable or object is to be assigned.</p>
+</div>
+<div id="vectors-and-data-types" class="section level2">
+<h2>Vectors and data types</h2>
+<p>One of the most common data types in R is the vector. These are objects which are composed of a series of values which can be either numerics, characters, factors, or logicals. Suppose we go out and collect data on the lengths (in centimeters) of leaves for a BIOL 101 prac. We need to collect five measurements from three tree species We can store these data in <code>length.cm</code>:</p>
+<pre class="r"><code>length.cm &lt;- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+length.cm</code></pre>
+<pre><code>##  [1]  5.8  4.8  3.7  5.3  4.5  8.3  8.8  9.7  7.7  8.1 15.2 16.1 14.3 12.2 15.5</code></pre>
+<p>We can then record the name of each tree in a vector in a similar manner:</p>
+<pre class="r"><code>names.tree &lt;- c(&quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;)</code></pre>
+<p>The quotation marks here are essential. They tell R that each value assigned to the vector is a character string. Without these quotations R will assume that <code>Spp 1</code>, <code>Spp 2</code>, and <code>Spp 3</code> are objects. This would throw an error because there are no objects with those names in our R session.</p>
+<p>We can get an overview of a vector. <code>length()</code> will tell us how long (how many elements) are in the vector:</p>
+<pre class="r"><code>length.cm &lt;- c(5.8, 4.8, 3.7, 5.3, 4.5, 8.3, 8.8, 9.7, 7.7, 8.1, 15.2, 16.1, 14.3, 12.2, 15.5)
+names.tree &lt;- c(&quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 1&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 2&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;, &quot;Spp 3&quot;)
+length(length.cm)</code></pre>
+<pre><code>## [1] 15</code></pre>
+<pre class="r"><code>length(names.tree)</code></pre>
+<pre><code>## [1] 15</code></pre>
+<p>Vectors must be made up of a series of elements of the same data type. To see the data type of a vector we can call <code>class()</code>:</p>
+<pre class="r"><code>class(length.cm)</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code>class(names.tree)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<p>When we get to larger data frmaes <code>str()</code> will give us the structure of the object:</p>
+<pre class="r"><code>str(length.cm)</code></pre>
+<pre><code>##  num [1:15] 5.8 4.8 3.7 5.3 4.5 8.3 8.8 9.7 7.7 8.1 ...</code></pre>
+<pre class="r"><code>str(names.tree)</code></pre>
+<pre><code>##  chr [1:15] &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 2&quot; &quot;Spp 2&quot; &quot;Spp 2&quot; ...</code></pre>
+<p>Suppose we collected five more measurements from a fourth species, we could add these data to our vectors as follows:</p>
+<pre class="r"><code>length.cm &lt;- c(length.cm, 22.1, 22.5, 20.3, 25.1, 23.3)
+names.tree &lt;- c(names.tree, &quot;Spp 4&quot;, &quot;Spp 4&quot;, &quot;Spp 4&quot;, &quot;Spp 4&quot;, &quot;Spp 4&quot;)
+length.cm</code></pre>
+<pre><code>##  [1]  5.8  4.8  3.7  5.3  4.5  8.3  8.8  9.7  7.7  8.1 15.2 16.1 14.3 12.2 15.5
+## [16] 22.1 22.5 20.3 25.1 23.3</code></pre>
+<pre><code>##  [1] &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 2&quot; &quot;Spp 2&quot; &quot;Spp 2&quot; &quot;Spp 2&quot;
+## [10] &quot;Spp 2&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 4&quot; &quot;Spp 4&quot; &quot;Spp 4&quot;
+## [19] &quot;Spp 4&quot; &quot;Spp 4&quot;</code></pre>
+<p>Note how in order to retain the original data contained in the vectors we have to ‘reassign’ the vector to itself together with the new data. If we didn’t the new data would override the original data. These are the two fundamental data types in R but there are a few otherse that are important: * <code>"logical"</code> which store <code>TRUE</code> and <code>FALSE</code> (boolean) type data * <code>"integer"</code> which store whole numbers Besides vectors there are several other important data structures in R. These include <code>list</code>, <code>matrix</code>, <code>data.frame</code>, <code>factor</code>, and <code>array</code>.</p>
+<div id="quiz-time" class="section level3">
+<h3>Quiz time</h3>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Vectors can be of several types but what happens if we mix different types together?
+<details>
+<summary>Answer</summary> R will implicitly convert each element to the same data type.
+</details></li>
+<li>Give the data types of each of these vectors:</li>
+</ol>
+<pre><code>```r
+num_char &lt;- c(1, 2, 3, &quot;a&quot;)
+num_logical &lt;- c(1, 2, 3, TRUE)
+char_logical &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, TRUE)
+tricky &lt;- c(1, 2, 3, &quot;4&quot;)
+```</code></pre>
+<details>
+<summary>Answer</summary> <code>character</code>, <code>numeric</code>, <code>character</code>, <code>character</code>. <br> R does this by trying to find the ‘lowest common denominator’ amongst all the elements without loosing any data.
+</details>
+<ol start="3" style="list-style-type: decimal">
+<li>You’ve probably noticed that objects of different types get converted into a single, shared type within a vector. In R, we call converting objects from one class into another class coercion. These conversions happen according to a hierarchy, whereby some types get preferentially coerced into other types. Can you draw a diagram that represents the hierarchy of how these data types are coerced?
+<details>
+<summary>Answer</summary> logical –&gt; numeric –&gt; character &lt;– logical
+</details></li>
+</ol>
+</blockquote>
+</div>
+</div>
+<div id="subsetting-vectors" class="section level2">
+<h2>Subsetting vectors</h2>
+<p>We can call a vector’s name and it will return the entire contents of the vector:</p>
+<pre class="r"><code>names.tree</code></pre>
+<pre><code>##  [1] &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 1&quot; &quot;Spp 2&quot; &quot;Spp 2&quot; &quot;Spp 2&quot; &quot;Spp 2&quot;
+## [10] &quot;Spp 2&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 3&quot; &quot;Spp 4&quot; &quot;Spp 4&quot; &quot;Spp 4&quot;
+## [19] &quot;Spp 4&quot; &quot;Spp 4&quot;</code></pre>
+<p>but suppose we only want a few selected values of the vector… We can do this by telling R exactly what we want:</p>
+<pre class="r"><code>names.tree[2]</code></pre>
+<pre><code>## [1] &quot;Spp 1&quot;</code></pre>
+<pre class="r"><code>names.tree[c(2, 6, 9)]</code></pre>
+<pre><code>## [1] &quot;Spp 1&quot; &quot;Spp 2&quot; &quot;Spp 2&quot;</code></pre>
+<p>Working with individual vectors is great - but suppose we wanted to put them together in a table form. We can do that quite easily with the <code>cbind()</code> function (this basically stands for “column bind”). We would bind the two vectors and then tell R that this combination must be <code>as.data.frame()</code>. This converts these two vectors (initially a matrix) into an object that has columns and rows much like an Excel Spreadsheet does:</p>
+<pre class="r"><code>data.prac &lt;- as.data.frame(cbind(names.tree, length.cm))
+data.prac</code></pre>
+<pre><code>##    names.tree length.cm
+## 1       Spp 1       5.8
+## 2       Spp 1       4.8
+## 3       Spp 1       3.7
+## 4       Spp 1       5.3
+## 5       Spp 1       4.5
+## 6       Spp 2       8.3
+## 7       Spp 2       8.8
+## 8       Spp 2       9.7
+## 9       Spp 2       7.7
+## 10      Spp 2       8.1
+## 11      Spp 3      15.2
+## 12      Spp 3      16.1
+## 13      Spp 3      14.3
+## 14      Spp 3      12.2
+## 15      Spp 3      15.5
+## 16      Spp 4      22.1
+## 17      Spp 4      22.5
+## 18      Spp 4      20.3
+## 19      Spp 4      25.1
+## 20      Spp 4      23.3</code></pre>
+<p>Not too hard hey? Whilst we might not always have to do this kind of work (much of the data we will use in R will likely already be formatted in this manner when we import it into R) the principles described here give a good introduction into the way you need to think in order to code effectively in R. That’s all for this section - next we’ll move on to “data wrangling” with <code>dplyr</code>.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
